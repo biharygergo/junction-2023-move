@@ -1,0 +1,14 @@
+.page-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+.game-wrapper {
+  max-width: 350px;
+  max-height: 700px;
+  height: 100%;
+  width: 100%;
+  background: black;
+  border-radius: 24px;
+}
