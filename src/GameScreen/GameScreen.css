@@ -9,6 +9,8 @@
   max-height: 700px;
   height: 100%;
   width: 100%;
-  background: black;
+  background: lightgreen;
   border-radius: 24px;
+  overflow: hidden;
+  position: relative;
 }

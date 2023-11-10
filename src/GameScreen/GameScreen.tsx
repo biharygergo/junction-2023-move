@@ -1,11 +1,13 @@
 import React from "react";
-import logo from "./logo.svg";
 import "./GameScreen.css";
+import { Segmentation } from "./Segmentation";
 
 function GameScreen() {
   return (
     <div className="page-wrapper">
-      <div className="game-wrapper"></div>
+      <div className="game-wrapper">
+        <Segmentation></Segmentation>
+      </div>
     </div>
   );
 }
