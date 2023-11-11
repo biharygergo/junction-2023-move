@@ -3,6 +3,7 @@ import "./GameScreen.css";
 import { Segmentation } from "./Segmentation";
 import { GameCanvas } from "../components/GameCanvas";
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from "./constants";
+import CanvasRecorder from "./CanvasRecorder";
 
 function GameScreen() {
   return (
@@ -21,6 +22,7 @@ function GameScreen() {
           width={CANVAS_WIDTH}
           height={CANVAS_HEIGHT}
         ></canvas>
+        <CanvasRecorder></CanvasRecorder>
         {/*         <GameCanvas />
          */}{" "}
       </div>
