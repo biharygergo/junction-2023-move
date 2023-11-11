@@ -5,6 +5,7 @@ import {
   collection,
   setDoc,
   doc,
+  getDocs,
 } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
@@ -60,4 +61,16 @@ export async function uploadDancePost(post: DancePostDto, videoBlob: any) {
     createdAt: Timestamp.now(),
     ...post,
   });
+}
+
+export async function getPosts() {
+  const querySnapshot = await getDocs(collection(db, COLLECTION));
+  const posts: DancePost[] = [];
+  querySnapshot.forEach((doc) => {
+    // doc.data() is never undefined for query doc snapshots
+    console.log(doc.id, " => ", doc.data());
+    posts.push(doc.data() as DancePost);
+  });
+
+  return posts;
 }

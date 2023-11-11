@@ -1,0 +1,50 @@
+.page-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+.game-wrapper {
+  max-width: 360px;
+  max-height: 640px;
+  height: 100%;
+  width: 100%;
+  background: white;
+  border-radius: 24px;
+  position: relative;
+  overflow: auto;
+  border: 5px solid black;
+}
+
+.section {
+  height: 100%;
+}
+
+.section-content {
+  padding: 1rem;
+}
+
+.section-content video {
+  width: 100%;
+  border-radius: 20px;
+}
+
+.video-wrap {
+  position: relative;
+}
+
+.play-button {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 10;
+  background: white;
+  border: none;
+  padding: 3rem;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.play-button .material-symbols-outlined {
+  font-size: 50px;
+}
