@@ -9,14 +9,7 @@ import * as bodySegmentation from "@tensorflow-models/body-segmentation";
 import * as posedetection from "@tensorflow-models/pose-detection";
 
 import "@mediapipe/selfie_segmentation";
-import {
-  Keypoint,
-  Pose,
-} from "@tensorflow-models/body-segmentation/dist/body_pix/impl/types";
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from "./constants";
-import { FFmpeg } from "@ffmpeg/ffmpeg";
-import { toBlobURL, fetchFile } from "@ffmpeg/util";
-const ffmpeg = new FFmpeg();
 
 const model = bodySegmentation.SupportedModels.MediaPipeSelfieSegmentation; // or 'BodyPix'
 const poseDetectionModel = posedetection.SupportedModels.MoveNet;
@@ -38,14 +31,11 @@ export type DetectionTarget = {
 export function Segmentation(props: {
   onTargetMove?: (target: DetectionTarget) => void;
 }) {
-  const [downloadLink, setDownloadLink] = useState<string>("");
   const segmenterRef = useRef<any>();
   const poseDetectorRef = useRef<any>();
-  const recorderRef = useRef<MediaRecorder>();
   const backgroundImageRef = useRef<any>();
 
   useEffect(() => {
-    // Not showing vendor prefixes.
     (window.navigator as any).getUserMedia(
       { video: { width: CANVAS_WIDTH, height: CANVAS_HEIGHT }, audio: false },
       async function (localMediaStream: any) {
@@ -100,52 +90,73 @@ export function Segmentation(props: {
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
     const ctx = canvas.getContext("2d");
 
-    ctx?.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT); // clear the image first
+    // Draw export canvas here...
+    const exportCanvas = document.getElementById(
+      "canvas-export"
+    ) as HTMLCanvasElement;
 
-    ctx?.drawImage(await people?.[0]?.mask?.toCanvasImageSource(), 0, 0);
+    const exportContext = exportCanvas.getContext("2d");
+
+    if (ctx && video) {
+      clearCanvas(ctx);
+      await drawSegmentedPersonOnCanvas(people, ctx, video);
+      drawRenderFrame(ctx);
+      for (const pose of poses) {
+        drawSkeleton(pose.keypoints, ctx, {
+          drawBodyTarget: true,
+          drawDebugText: true,
+          drawHandTarget: true,
+        });
+      }
+
+      if (exportContext) {
+        clearCanvas(exportContext);
+        await drawSegmentedPersonOnCanvas(people, exportContext, video);
+        drawBackgroundImageBehindContent(exportContext);
+      }
+    }
+  };
+
+  const drawBackgroundImageBehindContent = (ctx: CanvasRenderingContext2D) => {
+    ctx.globalCompositeOperation = "destination-over";
+    ctx.drawImage(backgroundImageRef.current, 0, 0);
+    ctx.globalCompositeOperation = "source-over";
+  };
+
+  const clearCanvas = (ctx: CanvasRenderingContext2D) => {
+    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+  };
+
+  const drawRenderFrame = (ctx: CanvasRenderingContext2D) => {
+    ctx.strokeStyle = "purple";
+    ctx.lineWidth = 4;
+    ctx.strokeRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    ctx.strokeStyle = "white";
+  };
+
+  const drawSegmentedPersonOnCanvas = async (
+    people: any[],
+    ctx: CanvasRenderingContext2D,
+    video: HTMLVideoElement
+  ) => {
+    ctx.drawImage(await people?.[0]?.mask?.toCanvasImageSource(), 0, 0);
 
     // Add the original video back in (in image) , but only overwrite overlapping pixels.
-    if (ctx && video) {
-      ctx.globalCompositeOperation = "source-in";
-      ctx.drawImage(video, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-      ctx.globalCompositeOperation = "source-over";
-      ctx.strokeStyle = "purple";
-      ctx.lineWidth = 4;
-      ctx.strokeRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-      ctx.strokeStyle = "white";
-      renderPoses(poses);
-
-      // Draw export canvas here...
-      const secondCanvas = document.getElementById(
-        "canvas-export"
-      ) as HTMLCanvasElement;
-
-      const ctx2 = secondCanvas.getContext("2d");
-      ctx2?.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT); // clear the image first
-      ctx2?.drawImage(
-        backgroundImageRef.current,
-        0,
-        0,
-        CANVAS_WIDTH,
-        CANVAS_HEIGHT
-      );
-      ctx2?.drawImage(ctx.canvas, 0, 0);
-    }
+    ctx.globalCompositeOperation = "source-in";
+    ctx.drawImage(video, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    ctx.globalCompositeOperation = "source-over";
   };
 
-  const renderPoses = (poses: Pose[]) => {
-    for (const pose of poses) {
-      drawSkeleton(pose.keypoints);
+  const drawSkeleton = (
+    keypoints: any[],
+    ctx: CanvasRenderingContext2D,
+    config: {
+      drawHandTarget?: boolean;
+      drawBodyTarget?: boolean;
+      drawDebugText?: boolean;
     }
-  };
-
-  const drawSkeleton = (keypoints: any[]) => {
-    const canvas = document.getElementById("canvas") as HTMLCanvasElement;
-    const ctx = canvas.getContext("2d");
-    // Each poseId is mapped to a color in the color palette.
+  ) => {
     const color = "White";
-
-    if (!ctx) return;
 
     ctx.globalCompositeOperation = "source-over";
     ctx.fillStyle = color;
@@ -161,10 +172,11 @@ export function Segmentation(props: {
         const kp2 = keypoints[j];
 
         if (
+          config.drawHandTarget &&
           kp2.score > 0.3 &&
           (kp2.name === "left_wrist" || kp2.name === "right_wrist")
         ) {
-          drawHandTarget(kp1, kp2, ctx);
+          drawHandTarget(kp1, kp2, ctx, !!config.drawDebugText);
         }
 
         // If score is null, just show the keypoint.
@@ -179,24 +191,26 @@ export function Segmentation(props: {
         }
       });
 
-    const leftShoulder = keypoints.find((kp) => kp.name === "left_shoulder");
-    const rightHip = keypoints.find((kp) => kp.name === "right_hip");
+    if (config.drawBodyTarget) {
+      const leftShoulder = keypoints.find((kp) => kp.name === "left_shoulder");
+      const rightHip = keypoints.find((kp) => kp.name === "right_hip");
 
-    if (
-      leftShoulder.score > scoreThreshold &&
-      rightHip.score > scoreThreshold
-    ) {
-      const bodyCenterVector = {
-        x: (rightHip.x - leftShoulder.x) / 2,
-        y: (rightHip.y - leftShoulder.y) / 2,
-      };
+      if (
+        leftShoulder.score > scoreThreshold &&
+        rightHip.score > scoreThreshold
+      ) {
+        const bodyCenterVector = {
+          x: (rightHip.x - leftShoulder.x) / 2,
+          y: (rightHip.y - leftShoulder.y) / 2,
+        };
 
-      const centerPoint = {
-        x: leftShoulder.x + bodyCenterVector.x,
-        y: leftShoulder.y + bodyCenterVector.y,
-      };
+        const centerPoint = {
+          x: leftShoulder.x + bodyCenterVector.x,
+          y: leftShoulder.y + bodyCenterVector.y,
+        };
 
-      drawBodyTarget(centerPoint.x, centerPoint.y, ctx);
+        drawBodyTarget(centerPoint.x, centerPoint.y, ctx);
+      }
     }
   };
 
@@ -221,7 +235,8 @@ export function Segmentation(props: {
   const drawHandTarget = (
     kp1: any,
     kp2: any,
-    ctx: CanvasRenderingContext2D
+    ctx: CanvasRenderingContext2D,
+    drawDebugText: boolean
   ) => {
     const leftHandVectorX = (kp2.x - kp1.x) * 0.3;
     const leftHandVectorY = (kp2.y - kp1.y) * 0.3;
@@ -244,7 +259,7 @@ export function Segmentation(props: {
       y: relativePoint.y,
     });
 
-    if (kp2.name === "left_wrist") {
+    if (drawDebugText && kp2.name === "left_wrist") {
       writeHandPosition(relativePoint.x, relativePoint.y, kp2.name, ctx);
     }
   };
@@ -268,93 +283,9 @@ export function Segmentation(props: {
     };
   };
 
-  const loadFfmpeg = async () => {
-    const baseURL = "https://unpkg.com/@ffmpeg/core-mt@0.12.4/dist/umd";
-    ffmpeg.on("log", ({ message }: any) => {
-      console.log(message);
-    });
-    // toBlobURL is used to bypass CORS issue, urls with the same
-    // domain can be used directly.
-    await ffmpeg.load({
-      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
-      wasmURL: await toBlobURL(
-        `${baseURL}/ffmpeg-core.wasm`,
-        "application/wasm"
-      ),
-      workerURL: await toBlobURL(
-        `${baseURL}/ffmpeg-core.worker.js`,
-        "text/javascript"
-      ),
-    });
-  };
-
-  const startRecording = async () => {
-    console.log("Loading ffmpeg");
-    await loadFfmpeg();
-    console.log("Loaded ffmpeg");
-    const canvas = document.getElementById("canvas-export") as HTMLCanvasElement;
-
-    var stream = canvas.captureStream(25);
-
-    const mediaRecorder = new MediaRecorder(stream, {
-      mimeType: "video/webm; codecs=vp9",
-    });
-
-    recorderRef.current = mediaRecorder;
-
-    mediaRecorder.start(0);
-    console.log("Starting recording...");
-
-    const chunks: any[] = [];
-    mediaRecorder.ondataavailable = function (e: any) {
-      chunks.push(e.data);
-      console.log("Got chunk...");
-    };
-
-    mediaRecorder.onstop = function (event) {
-      var blob = new Blob(chunks, {
-        type: "video/webm",
-      });
-      var url = URL.createObjectURL(blob);
-      videoReady({ url, blob }); // resolve both blob and url in an object
-    };
-  };
-  const endRecording = () => {
-    recorderRef.current?.stop();
-  };
-
-  const videoReady = async (props: { url: string; blob: any }) => {
-    await transcode(new Uint8Array(await props.blob.arrayBuffer()));
-  };
-
-  const transcode = async (webcamData: any) => {
-    const message = document.getElementById("message");
-    const name = "record.webm";
-    console.log("Transcoding...");
-    await ffmpeg.writeFile(name, webcamData);
-    const command = `-i ${name} -filter:v fps=25 output.mp4`;
-    await ffmpeg.exec(command.split(" "));
-    console.log("Transcoding complete...");
-    const data = await ffmpeg.readFile("output.mp4");
-
-    setDownloadLink(
-      URL.createObjectURL(
-        new Blob([(data as any).buffer], { type: "video/mp4" })
-      )
-    );
-  };
   return (
     <>
       <video id="video" autoPlay={true}></video>
-      <div className="controls">
-        <button onClick={() => startRecording()}>Record</button>
-        <button onClick={() => endRecording()}>Stop recording</button>
-        {downloadLink && (
-          <a href={downloadLink} download>
-            Download video
-          </a>
-        )}
-      </div>
     </>
   );
 }

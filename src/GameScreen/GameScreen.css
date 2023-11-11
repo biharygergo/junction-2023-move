@@ -24,3 +24,8 @@
   object-fit: cover;
   transform: scaleX(-1);
 }
+
+#canvas-export {
+  transform: scaleX(-1);
+  display: none;
+}
