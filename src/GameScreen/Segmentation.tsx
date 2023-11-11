@@ -120,12 +120,13 @@ export function Segmentation(props: {
     ctx.strokeStyle = color;
     ctx.lineWidth = 2;
 
+    const scoreThreshold = 0.3;
+
     posedetection.util
       .getAdjacentPairs(poseDetectionModel)
       .forEach(([i, j]) => {
         const kp1 = keypoints[i];
         const kp2 = keypoints[j];
-        const scoreThreshold = 0.3;
 
         if (
           kp2.score > 0.3 &&
@@ -145,6 +146,44 @@ export function Segmentation(props: {
           ctx.stroke();
         }
       });
+
+    const leftShoulder = keypoints.find((kp) => kp.name === "left_shoulder");
+    const rightHip = keypoints.find((kp) => kp.name === "right_hip");
+
+    if (
+      leftShoulder.score > scoreThreshold &&
+      rightHip.score > scoreThreshold
+    ) {
+      const bodyCenterVector = {
+        x: (rightHip.x - leftShoulder.x) / 2,
+        y: (rightHip.y - leftShoulder.y) / 2,
+      };
+
+      const centerPoint = {
+        x: leftShoulder.x + bodyCenterVector.x,
+        y: leftShoulder.y + bodyCenterVector.y,
+      };
+
+      drawBodyTarget(centerPoint.x, centerPoint.y, ctx);
+    }
+  };
+
+  const drawBodyTarget = (
+    x: number,
+    y: number,
+    ctx: CanvasRenderingContext2D
+  ) => {
+    const circle = new Path2D();
+    circle.arc(x, y, 50, 0, 2 * Math.PI);
+    ctx.fillStyle = "red";
+    ctx.fill(circle);
+    ctx.stroke(circle);
+    ctx.fillStyle = "white";
+
+    props.onTargetMove?.({
+        name: 'body',
+        ...convertToRelativePoint(x, y)
+      });
   };
 
   const drawHandTarget = (
@@ -163,7 +202,7 @@ export function Segmentation(props: {
     ctx.fill(circle);
     ctx.stroke(circle);
 
-    const relativePoint = converToRelativePoint(
+    const relativePoint = convertToRelativePoint(
       handCenterPointX,
       handCenterPointY
     );
@@ -190,7 +229,7 @@ export function Segmentation(props: {
     ctx.fillText(title, 10, 35);
   };
 
-  const converToRelativePoint = (px: number, py: number) => {
+  const convertToRelativePoint = (px: number, py: number) => {
     return {
       x: +(1 - px / CANVAS_WIDTH).toFixed(3),
       y: +(py / CANVAS_HEIGHT).toFixed(3),
