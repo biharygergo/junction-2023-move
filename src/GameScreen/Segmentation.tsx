@@ -13,6 +13,7 @@ import {
   Keypoint,
   Pose,
 } from "@tensorflow-models/body-segmentation/dist/body_pix/impl/types";
+import { CANVAS_HEIGHT, CANVAS_WIDTH } from "./constants";
 
 const model = bodySegmentation.SupportedModels.MediaPipeSelfieSegmentation; // or 'BodyPix'
 const poseDetectionModel = posedetection.SupportedModels.MoveNet;
@@ -25,14 +26,22 @@ const segmenterConfig = {
   },
 };
 
-export function Segmentation() {
+export type DetectionTarget = {
+  name: "left_hand" | "right_hand" | "body";
+  x: number;
+  y: number;
+};
+
+export function Segmentation(props: {
+  onTargetMove?: (target: DetectionTarget) => void;
+}) {
   const segmenterRef = useRef<any>();
   const poseDetectorRef = useRef<any>();
 
   useEffect(() => {
     // Not showing vendor prefixes.
     (window.navigator as any).getUserMedia(
-      { video: true, audio: false },
+      { video: { width: CANVAS_WIDTH, height: CANVAS_HEIGHT }, audio: false },
       async function (localMediaStream: any) {
         const video = document.querySelector("video") as HTMLVideoElement;
         video.srcObject = localMediaStream;
@@ -43,6 +52,7 @@ export function Segmentation() {
           bodySegmentation
             .createSegmenter(model, segmenterConfig as any)
             .then(async (segmenter) => {
+              console.log("Loaded segmenter...");
               await tf.setBackend("webgl");
 
               segmenterRef.current = segmenter;
@@ -78,14 +88,14 @@ export function Segmentation() {
     const canvas = document.getElementById("canvas") as HTMLCanvasElement;
     const ctx = canvas.getContext("2d");
 
-    ctx?.clearRect(0, 0, 640, 480); // clear the image first
+    ctx?.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT); // clear the image first
 
     ctx?.drawImage(await people?.[0]?.mask?.toCanvasImageSource(), 0, 0);
 
     // Add the original video back in (in image) , but only overwrite overlapping pixels.
     if (ctx && video) {
       ctx.globalCompositeOperation = "source-in";
-      ctx.drawImage(video, 0, 0, 640, 480);
+      ctx.drawImage(video, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
       ctx.globalCompositeOperation = "source-over";
       renderPoses(poses);
     }
@@ -115,10 +125,18 @@ export function Segmentation() {
       .forEach(([i, j]) => {
         const kp1 = keypoints[i];
         const kp2 = keypoints[j];
+        const scoreThreshold = 0.3;
+
+        if (
+          kp2.score > 0.3 &&
+          (kp2.name === "left_wrist" || kp2.name === "right_wrist")
+        ) {
+          drawHandTarget(kp1, kp2, ctx);
+        }
+
         // If score is null, just show the keypoint.
         const score1 = kp1.score != null ? kp1.score : 1;
         const score2 = kp2.score != null ? kp2.score : 1;
-        const scoreThreshold = 0.3;
 
         if (score1 >= scoreThreshold && score2 >= scoreThreshold) {
           ctx.beginPath();
@@ -127,6 +145,56 @@ export function Segmentation() {
           ctx.stroke();
         }
       });
+  };
+
+  const drawHandTarget = (
+    kp1: any,
+    kp2: any,
+    ctx: CanvasRenderingContext2D
+  ) => {
+    const leftHandVectorX = (kp2.x - kp1.x) * 0.3;
+    const leftHandVectorY = (kp2.y - kp1.y) * 0.3;
+
+    const handCenterPointX = kp2.x + leftHandVectorX;
+    const handCenterPointY = kp2.y + leftHandVectorY;
+
+    const circle = new Path2D();
+    circle.arc(handCenterPointX, handCenterPointY, 30, 0, 2 * Math.PI);
+    ctx.fill(circle);
+    ctx.stroke(circle);
+
+    const relativePoint = converToRelativePoint(
+      handCenterPointX,
+      handCenterPointY
+    );
+    props.onTargetMove?.({
+      name: kp2.name,
+      x: relativePoint.x,
+      y: relativePoint.y,
+    });
+
+    if (kp2.name === "left_wrist") {
+      writeHandPosition(relativePoint.x, relativePoint.y, kp2.name, ctx);
+    }
+  };
+
+  const writeHandPosition = (
+    handX: number,
+    handY: number,
+    name: string,
+    ctx: CanvasRenderingContext2D
+  ) => {
+    ctx.fillStyle = "#fff";
+    ctx.font = "24px sans-serif";
+    const title = `${name}: (${handX}, ${handY})`;
+    ctx.fillText(title, 10, 35);
+  };
+
+  const converToRelativePoint = (px: number, py: number) => {
+    return {
+      x: +(1 - px / CANVAS_WIDTH).toFixed(3),
+      y: +(py / CANVAS_HEIGHT).toFixed(3),
+    };
   };
 
   return (

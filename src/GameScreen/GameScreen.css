@@ -5,8 +5,8 @@
   height: 100vh;
 }
 .game-wrapper {
-  max-width: 350px;
-  max-height: 700px;
+  max-width: 360px;
+  max-height: 640px;
   height: 100%;
   width: 100%;
   background: lightgreen;
