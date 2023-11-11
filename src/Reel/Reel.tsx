@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Reel.css";
-import { DancePost, getPosts } from "../dances-service";
+import { DancePost, getPosts, likePost } from "../dances-service";
 import moment from "moment";
 
 function Reel() {
@@ -12,26 +12,32 @@ function Reel() {
   const [hasInteracted, setHasInteracted] = useState(false);
 
   useEffect(() => {
-    getPosts().then((posts) =>
+    const unsubscribe = getPosts(posts => {
       setPosts(
         posts.map((post) => ({
           ...post,
           fromNow: moment(post.createdAt.toDate()).fromNow(),
         }))
       )
-    );
+    });
+
+    return () => {
+      unsubscribe();
+    }
   }, []);
 
   useEffect(() => {
     const options = {
-      root: document.querySelector(".reels-content-wrapper"),
+      root: null,
       rootMargin: "0px",
       threshold: 0.5, // Adjust as needed, this represents the percentage of the video that needs to be visible
     };
 
     const handleIntersection = (entries: any[]) => {
       entries.forEach((entry) => {
-        console.log(entry, hasInteracted);
+        if (entry.isIntersecting) {
+          console.log("intersect", entry.target.getAttribute("data-id"));
+        }
         if (entry.isIntersecting && hasInteracted) {
           entry.target.play();
           startPlayingVideo(entry.target.getAttribute("data-id"));
@@ -85,14 +91,48 @@ function Reel() {
                   ref={(ref) => (videoRefs.current[post.id] = ref)}
                   src={post.videoPublicUrl}
                   data-id={post.id}
+                  loop
                 ></video>
               </div>
               <div className="meta">
-                <h3 className="userName">Amazing Hacker #{idx} 👩‍💻</h3>
+                <h3 className="userName">
+                  Amazing Hacker #{posts.length - idx}
+                </h3>
+                <div className="likes-container">
+                  <button
+                    className="like-button"
+                    onClick={() => likePost(post.id)}
+                  >
+                    <span className="material-symbols-outlined meta-icon">
+                      favorite
+                    </span>
+                  </button>
+                  <span>{post.likes ?? 0}</span>
+                </div>
                 <h5 className="fitnessScore">
+                  <span className="material-symbols-outlined meta-icon">
+                    sports_score
+                  </span>
                   {post.fitnessStats.score} points
                 </h5>
-                <small>{post.fromNow}</small>
+                <h5 className="fitnessScore">
+                  <span className="material-symbols-outlined meta-icon">
+                    volume_up
+                  </span>
+                  Rick & Roll
+                </h5>
+                <h5 className="fitnessScore">
+                  <span className="material-symbols-outlined meta-icon">
+                    ecg_heart
+                  </span>
+                  110 BPM
+                </h5>
+                <h5 className="fitnessScore">
+                  <span className="material-symbols-outlined meta-icon">
+                    schedule
+                  </span>
+                  {post.fromNow}
+                </h5>
               </div>
             </div>
           </div>

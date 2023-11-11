@@ -8,6 +8,9 @@ import {
   getDocs,
   query,
   orderBy,
+  updateDoc,
+  increment,
+  onSnapshot,
 } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
@@ -35,6 +38,7 @@ export type DancePost = {
   fitnessStats: {
     score: number;
   };
+  likes?: number;
 };
 
 export type DancePostDto = Omit<
@@ -61,19 +65,24 @@ export async function uploadDancePost(post: DancePostDto, videoBlob: any) {
     id: docRef.id,
     videoPublicUrl: publicUrl,
     createdAt: Timestamp.now(),
+    likes: 0,
     ...post,
   });
 }
 
-export async function getPosts() {
+export function getPosts(setPosts: (posts: DancePost[]) => void) {
   const q = query(collection(db, COLLECTION), orderBy("createdAt", "desc"));
-  const querySnapshot = await getDocs(q);
-  const posts: DancePost[] = [];
-  querySnapshot.forEach((doc) => {
-    // doc.data() is never undefined for query doc snapshots
-    console.log(doc.id, " => ", doc.data());
-    posts.push(doc.data() as DancePost);
+  const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    setPosts(querySnapshot.docs.map((doc) => doc.data() as DancePost));
   });
 
-  return posts;
+  return unsubscribe;
+}
+
+export function likePost(id: string) {
+  const collectionRef = collection(db, COLLECTION);
+  const docRef = doc(collectionRef, id);
+  updateDoc(docRef, {
+    likes: increment(1),
+  });
 }
