@@ -132,7 +132,6 @@ export function Segmentation() {
   return (
     <>
       <video id="video" autoPlay={true}></video>
-      <canvas id="canvas" width={640} height={480}></canvas>
     </>
   );
 }
