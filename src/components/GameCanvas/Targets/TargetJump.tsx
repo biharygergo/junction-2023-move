@@ -107,7 +107,7 @@ const TargetJump: React.FC<BoxProps> = ({ side, startTime }) => {
       staticModelSource={"/model/Side_static.gltf"}
       explodedModelSource={"/model/Side_active.gltf"}
       targetPosition={targetPosition}
-      speed={0.1}
+      speed={0.2}
       checkHit={checkHit}
       rotation={rotation}
       scale={scale}

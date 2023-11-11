@@ -130,69 +130,49 @@ const targets = new Array(120).fill({}).map((value, index) => {
 
 const rickTargets = [
   {
-    "startTime": 4,
+    "startTime": 0,
+    "param": 3,
+    "type": "box"
+  },
+  {
+    "startTime": 1,
+    "param": 4,
+    "type": "box"
+  },
+  {
+    "startTime": 2,
     "param": 1,
     "type": "box"
   },
   {
-    "startTime": 6,
+    "startTime": 3,
     "param": 2,
-    "type": "box"
+    "type": "jump"
   },
   {
-    "startTime": 8,
-    "param": 3,
+    "startTime": 5,
+    "param": 1,
+    "type": "jump"
+  },
+  {
+    "startTime": 11,
+    "param": 0,
+    "type": "spin"
+  },
+  {
+    "startTime": 10,
+    "param": 2,
     "type": "box"
   },
   {
     "startTime": 10,
-    "param": 4,
+    "param": 1,
     "type": "box"
   },
   {
     "startTime": 12,
-    "param": 1,
-    "type": "jump"
-  },
-  {
-    "startTime": 16,
-    "param": 2,
-    "type": "jump"
-  },
-  {
-    "startTime": 20,
-    "param": 0,
-    "type": "spin"
-  },
-  {
-    "startTime": 22,
-    "param": 3,
-    "type": "box"
-  },
-  {
-    "startTime": 24,
-    "param": 4,
-    "type": "box"
-  },
-  {
-    "startTime": 28,
     "param": 3,
     "type": "jump"
-  },
-  {
-    "startTime": 30,
-    "param": 1,
-    "type": "box"
-  },
-  {
-    "startTime": 32,
-    "param": 2,
-    "type": "box"
-  },
-  {
-    "startTime": 36,
-    "param": 0,
-    "type": "spin"
   }
 ] as any;
 

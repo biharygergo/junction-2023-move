@@ -43,12 +43,12 @@ function GameScreen() {
 
     setTimeout(() => {
       console.log("starting record")
-      recorderRef.current.startRecording()
+      // recorderRef.current.startRecording()
     }, recordingStart * 1000)
 
     setTimeout(() => {
       console.log("ending record")
-      recorderRef.current.endRecording()
+      // recorderRef.current.endRecording()
     }, recordingEnd * 1000)
   }
 
