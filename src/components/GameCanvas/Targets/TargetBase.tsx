@@ -14,7 +14,7 @@ export interface TargetBaseProps extends MeshProps {
   targetPosition: Vector3;
   speed: number;
   checkHit: (params: CheckHitParams) => boolean;
-  recolor?: (params: any, z: number) => any
+  recolor?: (params: any, z: number) => any;
 }
 
 export const TargetBase: React.FC<TargetBaseProps> = ({
@@ -25,20 +25,16 @@ export const TargetBase: React.FC<TargetBaseProps> = ({
   speed = 0.1,
   checkHit,
   position = [0, 0, -15],
-    recolor,
+  recolor,
   ...props
 }) => {
   // const { rightHand, leftHand } = useHandPositions();
-  const { camera, size } = useThree();
+  const { camera } = useThree();
+  const [firstRenderTime, setFirstRenderTime] = useState<number | null>(null);
   const staticModelTemp = useLoader(GLTFLoader, staticModelSource);
-  const staticModel = useMemo(
-    () => {
-      const temp = staticModelTemp.scene.clone();
-      return temp
-      //
-    },
-    [staticModelTemp.scene],
-  );
+  const staticModel = useMemo(() => {
+    return staticModelTemp.scene.clone();
+  }, [staticModelTemp.scene]);
 
   // console.log({position})
   // console.log({size})
@@ -57,7 +53,7 @@ export const TargetBase: React.FC<TargetBaseProps> = ({
   const [hit, setHit] = useState(false); // New hit state
 
   const [visible, setVisible] = useState(false);
-  const [hovered, hover] = useState(false);
+  // const [hovered, hover] = useState(false);
 
   const ref = useRef<Mesh>(null);
   const mixer = useRef<AnimationMixer | null>(null); // For GLTF animations
@@ -104,13 +100,19 @@ export const TargetBase: React.FC<TargetBaseProps> = ({
   }, [hit, explodedModel.animations, ref]);
 
   useFrame(({ clock }, delta) => {
+    if (firstRenderTime === null) {
+      setFirstRenderTime(clock.getElapsedTime());
+    }
+
     const mesh = ref.current;
 
     if (mesh) {
-      const currentTime = clock.getElapsedTime();
+      const currentTime = clock.getElapsedTime() - (firstRenderTime || 0);
 
       if (currentTime > startTime) {
-        setVisible(true);
+        if (firstRenderTime !== null) {
+          setVisible(true);
+        }
         // ref.current.rotation.x += delta * 0.5; TODO: rotating
         // ref.current.rotation.y += delta * 0.5;
 
@@ -133,7 +135,6 @@ export const TargetBase: React.FC<TargetBaseProps> = ({
         //   recolor(staticModel, mesh.position.z);
         // }
 
-
         if (mixer.current) {
           mixer.current.update(delta);
         }
@@ -151,8 +152,8 @@ export const TargetBase: React.FC<TargetBaseProps> = ({
       {...props}
       position={position}
       // scale={0.05} // TODO: 0.05
-      onPointerOver={() => hover(true)}
-      onPointerOut={() => hover(false)}
+      // onPointerOver={() => hover(true)}
+      // onPointerOut={() => hover(false)}
       onClick={handleHit}
       // rotation={rotation}
       visible={visible}

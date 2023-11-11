@@ -12,6 +12,13 @@ type GameState = {
   appState: AppState;
   updateAppState?: (updatedState: Partial<AppState>) => void;
   updateLoadingState: (updatedState: Partial<Checklist>) => void;
+  score: number;
+  streak: number;
+  addHit: () => void;
+  addMiss: () => void;
+  gameStarted: boolean;
+  startGame: () => void;
+
 };
 
 type AppState = {
@@ -24,7 +31,7 @@ type Checklist = {
   webcamStream: boolean;
   tensorflow: boolean;
   ffmpeg: boolean;
-  threejs: boolean;
+  // threejs: boolean;
 };
 
 const DEFAULT_CHECKLIST: Checklist = {
@@ -32,7 +39,7 @@ const DEFAULT_CHECKLIST: Checklist = {
   webcamStream: false,
   tensorflow: false,
   ffmpeg: false,
-  threejs: false,
+  // threejs: false,
 };
 
 // Create the context with a default value
@@ -44,6 +51,12 @@ const GameContext = createContext<GameState>({
     allLoaded: false,
   },
   updateLoadingState: () => {},
+  streak: 1,
+  score: 0,
+  addHit: () => {},
+  addMiss: () => {},
+  gameStarted: false,
+  startGame: () => {}
 });
 
 // Create a provider component for the hand positions
@@ -56,12 +69,29 @@ export const GameProvider: any = ({ children }: any) => {
     body: undefined,
   });
 
+  const [score, setScore] = useState<GameState["score"]>(0);
+  const [streak, setStreak] = useState<GameState["streak"]>(1);
+  const [gameStarted, setGameStarted] = useState<GameState["gameStarted"]>(false);
+
   const [appState, setAppState] = useState<AppState>({
     loadingChecklist: DEFAULT_CHECKLIST,
     allLoaded: false,
   });
 
   // console.log('GameProvider', bodyPositions)
+
+  const addHit = () => {
+    setScore(score + streak);
+    setStreak(streak + 1)
+  };
+
+  const addMiss = () => {
+    setStreak(1)
+  };
+
+  const startGame = () => {
+    setGameStarted(true)
+  }
 
   // useCallback will return a memoized version of the callback that only changes if one of the dependencies has changed.
   const updateBodyPosition = useCallback((target: DetectionTarget) => {
@@ -122,12 +152,12 @@ export const GameProvider: any = ({ children }: any) => {
           ...oldState,
           loadingChecklist: newLoadedChecklist,
           allLoaded: Object.values(newLoadedChecklist).every(
-            (loaded) => !!loaded
+            (loaded) => !!loaded,
           ),
         };
       });
     },
-    []
+    [],
   );
 
   // Include the updateBodyPosition function in the context value
@@ -137,6 +167,12 @@ export const GameProvider: any = ({ children }: any) => {
     appState,
     updateAppState,
     updateLoadingState,
+    addMiss,
+    addHit,
+    score,
+    streak,
+    gameStarted,
+    startGame
   };
 
   return (
@@ -148,3 +184,5 @@ export const GameProvider: any = ({ children }: any) => {
 export const useGameState = () => {
   return useContext(GameContext);
 };
+
+

@@ -1,15 +1,22 @@
 import { MeshProps } from "@react-three/fiber";
-import React from "react";
-import {Euler, Vector3} from "three";
+import React, { useState } from "react";
+import { Euler, Vector3 } from "three";
 import TargetBase, { CheckHitParams } from "./TargetBase";
+import { useGameState } from "../../GameProvider";
 
 export interface BoxProps extends MeshProps {
   side: number; // 1 - right, 2 - left, 3 - down
   startTime: number;
 }
 
-const TargetJump: React.FC<BoxProps> = ({ side, startTime, ...props }) => {
-  const { leftHand, rightHand } = { leftHand: [-1, 1], rightHand: [1, 1] };
+const TargetJump: React.FC<BoxProps> = ({ side, startTime }) => {
+  const [wasHit, setWasHit] = useState(false);
+  const hitArea = [5, 20];
+  const {
+    addHit,
+    addMiss,
+    bodyPositions: { body },
+  } = useGameState();
 
   const targetPosition = React.useMemo(() => {
     switch (side) {
@@ -37,7 +44,6 @@ const TargetJump: React.FC<BoxProps> = ({ side, startTime, ...props }) => {
     }
   }, [side]) as any;
 
-
   const rotation = React.useMemo(() => {
     switch (side) {
       case 1:
@@ -45,7 +51,7 @@ const TargetJump: React.FC<BoxProps> = ({ side, startTime, ...props }) => {
       case 2:
         return [0, 0, 0];
       case 3:
-        return [0, 0,-Math.PI/2];
+        return [0, 0, -Math.PI / 2];
       default:
         return [0, 0, 0];
     }
@@ -61,28 +67,37 @@ const TargetJump: React.FC<BoxProps> = ({ side, startTime, ...props }) => {
   }, [side]) as any;
 
   const checkHit = ({ mesh, position }: CheckHitParams) => {
-    // const distanceLeftHand = mesh.position.distanceTo(
-    //   new Vector3(leftHand[0], leftHand[1], mesh.position.z),
-    // );
-    // const distanceRightHand = mesh.position.distanceTo(
-    //   new Vector3(rightHand[0], rightHand[1], mesh.position.z),
-    // );
-    //
-    // if (mesh.position.z < 5 || mesh.position.z > 13) {
-    //   return false;
-    // }
-    //
-    // const distanceThreshold = 1;
-    // if (corner === 1 || corner === 3) {
-    //   if (distanceRightHand < distanceThreshold) {
-    //     return true;
-    //   }
-    // } else {
-    //   if (distanceLeftHand < distanceThreshold) {
-    //     return true;
-    //   }
-    // }
+    // console.log(position)
+    if (wasHit) return true;
 
+    if (mesh.position.z < hitArea[0] || mesh.position.z > hitArea[1]) {
+      return false;
+    }
+
+    // const distanceThresholdDown = 0.9;
+    // const distanceThresholdUp = 1.8;
+    const distanceThreshold = side === 3 ? 0.4 : 0.4;
+
+    if (body !== undefined) {
+      const distanceToBody = new Vector3(position.x, position.y, 0).distanceTo(
+        new Vector3(body.x, body.y, 0),
+      );
+
+      console.log({ side, distanceToBody, position, body });
+
+      if (distanceToBody < distanceThreshold) {
+        console.log("HIT BODY");
+        setWasHit(true);
+        addMiss();
+        return true;
+      }
+    }
+
+    if (position.x < 0 || position.x > 1 || position.y < 0 || position.y > 1) {
+      console.log("Avoided wall " + side.toString());
+      addHit();
+
+    }
     return false;
   };
 
@@ -90,7 +105,7 @@ const TargetJump: React.FC<BoxProps> = ({ side, startTime, ...props }) => {
     <TargetBase
       startTime={startTime}
       staticModelSource={"/model/Side_static.gltf"}
-      explodedModelSource={"/model/Cube_exploded.gltf"}
+      explodedModelSource={"/model/Side_active.gltf"}
       targetPosition={targetPosition}
       speed={0.1}
       checkHit={checkHit}

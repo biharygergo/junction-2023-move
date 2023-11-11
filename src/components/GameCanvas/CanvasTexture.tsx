@@ -14,7 +14,7 @@ const CanvasVideoTextureObject: React.FC = () => {
   const meshRef = useRef<Mesh>();
   const textureRef = useRef<CanvasTexture>();
 
-  const scale = 6.1;
+  const scale = 7;
   useEffect(() => {
     const canvasElement = document.getElementById(
       "canvas",
@@ -29,12 +29,16 @@ const CanvasVideoTextureObject: React.FC = () => {
         map: texture,
         transparent: true,
       });
+
+      material.opacity = 0.85
+
       const geometry = new PlaneGeometry(1, CANVAS_HEIGHT / CANVAS_WIDTH);
       const mesh = new Mesh(geometry, material);
-      mesh.position.set(0, 0, 0);
+      mesh.position.set(0, 0, -5);
       scene.add(mesh);
       meshRef.current = mesh;
       mesh.scale.set(-scale, scale, scale);
+
     }
 
     // Cleanup

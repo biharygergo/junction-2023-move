@@ -1,0 +1,39 @@
+.loading-screen-wrapper {
+    /*display: flex;*/
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    /*position: absolute; !* Position it relative to the nearest positioned ancestor or to the initial containing block *!*/
+    /*top: 0; !* Align top edge to the viewport *!*/
+    /*left: 0; !* Align left edge to the viewport *!*/
+    width: 100%; /* Span the full width of the viewport */
+    /*height: 100%; !* Span the full height of the viewport *!*/
+    background: rgba(0, 0, 0, 0.5); /* Optional: semi-transparent background */
+    z-index: 99999999;
+    background-color: red;
+}
+
+.loading-screen {
+    text-align: center;
+}
+
+.loading-text {
+    font-family: "Press Start 2P", sans-serif;
+    color: white;
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+.loading-bar-container {
+    width: 100%;
+    background-color: white;
+    border-radius: 5px;
+    border: 4px black solid;
+    overflow: hidden;
+}
+
+.loading-bar {
+    height: 30px;
+    background-color: magenta;
+    transition: width 0.5s ease;
+}

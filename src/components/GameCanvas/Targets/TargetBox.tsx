@@ -12,6 +12,7 @@ export interface BoxProps extends MeshProps {
 const TargetBox: React.FC<BoxProps> = ({ corner, startTime }) => {
   // const { leftHand, rightHand } = { leftHand: [-1, 1], rightHand: [1, 1] };
   const {
+    addHit, addMiss,
     bodyPositions: { leftHand, rightHand },
   } = useGameState();
   const [wasHit, setWasHit] = useState(false);
@@ -43,18 +44,19 @@ const TargetBox: React.FC<BoxProps> = ({ corner, startTime }) => {
 
     // const distanceThresholdDown = 0.9;
     // const distanceThresholdUp = 1.8;
-    const distanceThreshold = 1.8
+    const distanceThreshold = 0.2;
 
     if (leftHand !== undefined && (corner === 2 || corner === 4)) {
       const distanceLeftHand = new Vector3(position.x, position.y, 0).distanceTo(
         new Vector3(leftHand.x, leftHand.y, 0),
       );
 
-
+      console.log({corner, position, distanceLeftHand, leftHand})
       if (
         distanceLeftHand < distanceThreshold
       ) {
         console.log("HIT LEFT");
+        addHit();
         setWasHit(true);
         return true;
       }
@@ -76,9 +78,15 @@ const TargetBox: React.FC<BoxProps> = ({ corner, startTime }) => {
         distanceRightHand < distanceThreshold
       ) {
         console.log("HIT RIGHT");
+        addHit();
         setWasHit(true);
         return true;
       }
+    }
+
+    if (position.x < 0 || position.x > 1 || position.y < 0 || position.y > 1) {
+      console.log("Missed cube " + corner.toString())
+      addMiss()
     }
     return false;
   };
