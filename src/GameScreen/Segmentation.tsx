@@ -45,7 +45,11 @@ export function Segmentation(props: {
   useEffect(() => {
     (window.navigator as any).mediaDevices
       .getUserMedia({
-        video: { width: CANVAS_WIDTH, height: CANVAS_HEIGHT },
+        video: {
+          width: CANVAS_WIDTH,
+          height: CANVAS_HEIGHT,
+          resizeMode: "crop-and-scale",
+        },
         audio: false,
       })
       .then((localMediaStream: any) => {
