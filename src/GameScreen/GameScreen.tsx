@@ -33,7 +33,7 @@ function GameScreen() {
           width={CANVAS_WIDTH}
           height={CANVAS_HEIGHT}
         ></canvas>
-        <GameCanvas />
+        {/* <GameCanvas /> */}
         <ul className="loadedItems">
           {loadedItems.map((entry) => (
             <li key={entry[0]}>
@@ -43,12 +43,20 @@ function GameScreen() {
         </ul>
 
         <div className="controls">
-          <button onClick={() => recorderRef.current.startRecording()}>
-            Record
-          </button>
-          <button onClick={() => recorderRef.current.endRecording()}>
-            Stop recording
-          </button>
+          {recorderRef.current.isRecording ? (
+            <button onClick={() => recorderRef.current.endRecording()}>
+              Stop recording
+            </button>
+          ) : (
+            <button onClick={() => recorderRef.current.startRecording()}>
+              Record
+            </button>
+          )}
+
+          {recorderRef.current.isTranscoding && (
+            <span>Transcoding video...</span>
+          )}
+
           {recorderRef.current.downloadLink && (
             <a href={recorderRef.current.downloadLink} download>
               Download video

@@ -12,6 +12,7 @@
   background: lightgreen;
   border-radius: 24px;
   position: relative;
+  overflow: hidden;
 }
 
 #canvas {

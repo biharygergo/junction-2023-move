@@ -10,6 +10,8 @@ export class Recorder {
   downloadLink?: string;
 
   loaded: boolean = false;
+  isRecording: boolean = false;
+  isTranscoding: boolean = false;
 
   loadFfmpeg = async () => {
     if (!this.loaded) {
@@ -38,6 +40,7 @@ export class Recorder {
   };
 
   videoReady = async (props: { url: string; blob: any }) => {
+    this.isTranscoding = true;
     const blob = await this.transcode(
       new Uint8Array(await props.blob.arrayBuffer())
     );
@@ -45,6 +48,7 @@ export class Recorder {
       { userId: "bela", fitnessStats: { score: 10 } },
       blob
     );
+    this.isTranscoding = false;
   };
 
   startRecording = async () => {
@@ -65,6 +69,7 @@ export class Recorder {
 
     mediaRecorder.start(0);
     console.log("Starting recording...");
+    this.isRecording = true;
 
     const chunks: any[] = [];
     mediaRecorder.ondataavailable = (e: any) => {
@@ -83,6 +88,7 @@ export class Recorder {
 
   endRecording = () => {
     this.recorderRef?.stop();
+    this.isRecording = false;
   };
 
   transcode = async (webcamData: any) => {
