@@ -43,16 +43,31 @@ export function Segmentation(props: {
   const { updateLoadingState } = useGameState();
 
   useEffect(() => {
+    const constraints = {
+      width: { ideal: CANVAS_HEIGHT },
+      height: { ideal: CANVAS_WIDTH },
+      advanced: [{ width: CANVAS_HEIGHT, height: CANVAS_WIDTH }],
+    };
+
     (window.navigator as any).mediaDevices
       .getUserMedia({
-        video: {
-          width: CANVAS_WIDTH,
-          height: CANVAS_HEIGHT,
-          resizeMode: "crop-and-scale",
-        },
+        video: { width: CANVAS_WIDTH, height: CANVAS_HEIGHT },
         audio: false,
       })
-      .then((localMediaStream: any) => {
+      .then(async (localMediaStream: any) => {
+        const track = localMediaStream.getVideoTracks()[0];
+        const actualWidth = localMediaStream
+          .getVideoTracks()[0]
+          .getSettings().width;
+        const actualHeight = localMediaStream
+          .getVideoTracks()[0]
+          .getSettings().height;
+
+        if (actualWidth > actualHeight) {
+          console.log('Flipping camera on mobile');
+          await track.applyConstraints(constraints);
+        }
+
         const video = document.querySelector("video") as HTMLVideoElement;
         video.srcObject = localMediaStream;
         console.log("Got video stream...");
