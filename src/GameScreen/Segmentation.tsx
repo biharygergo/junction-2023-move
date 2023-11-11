@@ -24,8 +24,12 @@ const segmenterConfig = {
 
 export type DetectionTarget = {
   name: "left_hand" | "right_hand" | "body";
-  x: number;
-  y: number;
+  position:
+    | {
+        x: number;
+        y: number;
+      }
+    | undefined;
 };
 
 export function Segmentation(props: {
@@ -34,6 +38,7 @@ export function Segmentation(props: {
   const segmenterRef = useRef<any>();
   const poseDetectorRef = useRef<any>();
   const backgroundImageRef = useRef<any>();
+  const animationRef = useRef<any>();
 
   useEffect(() => {
     (window.navigator as any).getUserMedia(
@@ -72,11 +77,15 @@ export function Segmentation(props: {
       },
       () => {}
     );
+
+    return () => {
+      cancelAnimationFrame(animationRef.current);
+    };
   }, []);
 
   const animationLoop = () => {
     renderSegmentation();
-    requestAnimationFrame(animationLoop);
+    animationRef.current = requestAnimationFrame(animationLoop);
   };
 
   const renderSegmentation = async () => {
@@ -173,10 +182,16 @@ export function Segmentation(props: {
 
         if (
           config.drawHandTarget &&
-          kp2.score > 0.3 &&
           (kp2.name === "left_wrist" || kp2.name === "right_wrist")
         ) {
-          drawHandTarget(kp1, kp2, ctx, !!config.drawDebugText);
+          if (kp2.score > 0.3) {
+            drawHandTarget(kp1, kp2, ctx, !!config.drawDebugText);
+          } else {
+            props.onTargetMove?.({
+              name: kp2.name,
+              position: undefined,
+            });
+          }
         }
 
         // If score is null, just show the keypoint.
@@ -210,6 +225,15 @@ export function Segmentation(props: {
         };
 
         drawBodyTarget(centerPoint.x, centerPoint.y, ctx);
+        props.onTargetMove?.({
+          name: "body",
+          position: convertToRelativePoint(centerPoint.x, centerPoint.y),
+        });
+      } else {
+        props.onTargetMove?.({
+          name: "body",
+          position: undefined,
+        });
       }
     }
   };
@@ -225,11 +249,6 @@ export function Segmentation(props: {
     ctx.fill(circle);
     ctx.stroke(circle);
     ctx.fillStyle = "white";
-
-    props.onTargetMove?.({
-      name: "body",
-      ...convertToRelativePoint(x, y),
-    });
   };
 
   const drawHandTarget = (
@@ -255,8 +274,7 @@ export function Segmentation(props: {
     );
     props.onTargetMove?.({
       name: kp2.name,
-      x: relativePoint.x,
-      y: relativePoint.y,
+      position: relativePoint,
     });
 
     if (drawDebugText && kp2.name === "left_wrist") {

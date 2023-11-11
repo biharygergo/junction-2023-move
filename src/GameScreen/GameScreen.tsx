@@ -8,9 +8,7 @@ import CanvasRecorder from "./CanvasRecorder";
 function GameScreen() {
   return (
     <div className="page-wrapper">
-      <div
-        className="game-wrapper"
-      >
+      <div className="game-wrapper">
         <Segmentation></Segmentation>
         <canvas
           id="canvas"
@@ -23,8 +21,7 @@ function GameScreen() {
           height={CANVAS_HEIGHT}
         ></canvas>
         <CanvasRecorder></CanvasRecorder>
-        {/*         <GameCanvas />
-         */}{" "}
+        <GameCanvas />
       </div>
     </div>
   );
