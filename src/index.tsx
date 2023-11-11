@@ -18,7 +18,7 @@ const router = createBrowserRouter([
     element: <GameScreen />,
   },
   {
-    path: "/reel",
+    path: "/reels",
     element: <Reel />,
   },
 ]);

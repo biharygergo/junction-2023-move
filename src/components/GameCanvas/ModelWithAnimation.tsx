@@ -1,4 +1,3 @@
-import { useGLTF } from "@react-three/drei";
 import {useEffect, useMemo, useRef, useState} from "react";
 import {MeshProps, useFrame, useLoader} from "@react-three/fiber";
 import { AnimationMixer, LoopOnce, Mesh } from "three";

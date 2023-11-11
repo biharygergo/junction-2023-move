@@ -5,6 +5,9 @@ import { GameCanvas } from "../components/GameCanvas";
 import { CANVAS_HEIGHT, CANVAS_WIDTH, RUN_VIDEO } from "./constants";
 import { Recorder } from "./CanvasRecorder";
 import { useGameState } from "../components/GameProvider";
+import {useNavigate} from "react-router-dom";
+import UploadModal from "../components/UploadModal";
+import AudioPlayer from "../components/Audio/Audio";
 ///recorderRef.current.isRecording
 function GameScreen() {
   const {
@@ -17,6 +20,7 @@ function GameScreen() {
     updateLoadingState,
   } = useGameState();
   const recorderRef = useRef(new Recorder());
+  const navigate = useNavigate();
 
   const loadedItems = Object.entries(appState.loadingChecklist);
 
@@ -26,18 +30,26 @@ function GameScreen() {
     });
   }, []);
 
+  useEffect(() => {
+    if (recorderRef.current.downloadLink !== undefined) {
+      navigate("/reels");
+    }
+  }, [recorderRef.current.downloadLink]);
+
   const clickStart = () => {
+    const recordingStart = 5;
+    const recordingEnd =  30;
     startGame()
 
     setTimeout(() => {
       console.log("starting record")
       recorderRef.current.startRecording()
-    }, 1000)
+    }, recordingStart * 1000)
 
     setTimeout(() => {
       console.log("ending record")
       recorderRef.current.endRecording()
-    }, 40000)
+    }, recordingEnd * 1000)
   }
 
   return (
@@ -75,6 +87,7 @@ function GameScreen() {
         {RUN_VIDEO && (
           <Segmentation onTargetMove={updateBodyPosition}></Segmentation>
         )}
+        <AudioPlayer audioSrc={`${process.env.PUBLIC_URL}/audio/mesmerizing.mp3`}  shouldPlay={gameStarted}/>
         <canvas
           id="canvas"
           width={CANVAS_WIDTH}
@@ -87,27 +100,9 @@ function GameScreen() {
         ></canvas>
         <GameCanvas />
 
-        <div className="controls">
-          {recorderRef.current.isRecording ? (
-            <button onClick={() => recorderRef.current.endRecording()}>
-              Stop recording
-            </button>
-          ) : (
-            <button onClick={() => recorderRef.current.startRecording()}>
-              Record
-            </button>
-          )}
-
-          {recorderRef.current.isTranscoding && (
-            <span>Transcoding video...</span>
-          )}
-
-          {recorderRef.current.downloadLink && (
-            <a href={recorderRef.current.downloadLink} download>
-              Download video
-            </a>
-          )}
-        </div>
+        {recorderRef.current.isTranscoding && (
+            <UploadModal />
+        )}
       </div>
     </div>
   );

@@ -51,7 +51,6 @@ const TargetBox: React.FC<BoxProps> = ({ corner, startTime }) => {
         new Vector3(leftHand.x, leftHand.y, 0),
       );
 
-      console.log({corner, position, distanceLeftHand, leftHand})
       if (
         distanceLeftHand < distanceThreshold
       ) {

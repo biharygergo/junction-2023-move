@@ -30,6 +30,7 @@ export const TargetBase: React.FC<TargetBaseProps> = ({
 }) => {
   // const { rightHand, leftHand } = useHandPositions();
   const { camera } = useThree();
+  const [ended, setEnded] = useState(false)
   const [firstRenderTime, setFirstRenderTime] = useState<number | null>(null);
   const staticModelTemp = useLoader(GLTFLoader, staticModelSource);
   const staticModel = useMemo(() => {
@@ -128,6 +129,8 @@ export const TargetBase: React.FC<TargetBaseProps> = ({
           mesh.position.distanceTo(targetPosition) < distanceToMoveThisFrame
         ) {
           mesh.position.copy(targetPosition);
+          setVisible(false)
+          setEnded(true)
         }
         setHit(checkHit({ position: getScreenPosition(mesh), mesh }));
 
@@ -145,6 +148,8 @@ export const TargetBase: React.FC<TargetBaseProps> = ({
   const handleHit = () => {
     setHit(true);
   };
+
+  if (ended) return null;
 
   return (
     <mesh
