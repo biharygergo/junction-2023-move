@@ -6,6 +6,7 @@ import GameScreen from "./GameScreen/GameScreen";
 import reportWebVitals from "./reportWebVitals";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Reel from "./Reel/Reel";
+import {GameProvider} from "./components/GameProvider";
 
 const router = createBrowserRouter([
   {
@@ -23,12 +24,14 @@ const router = createBrowserRouter([
 ]);
 
 const root = ReactDOM.createRoot(
-  document.getElementById("root") as HTMLElement
+  document.getElementById("root") as HTMLElement,
 );
 root.render(
   <>
-    <RouterProvider router={router} />
-  </>
+    <GameProvider>
+      <RouterProvider router={router} />
+    </GameProvider>
+  </>,
 );
 
 // If you want to start measuring performance in your app, pass a function

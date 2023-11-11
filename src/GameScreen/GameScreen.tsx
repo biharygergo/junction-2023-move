@@ -4,12 +4,15 @@ import { Segmentation } from "./Segmentation";
 import { GameCanvas } from "../components/GameCanvas";
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from "./constants";
 import CanvasRecorder from "./CanvasRecorder";
+import { useGameState } from "../components/GameProvider";
 
 function GameScreen() {
+  const { bodyPositions, updateBodyPosition } = useGameState();
+
   return (
     <div className="page-wrapper">
       <div className="game-wrapper">
-        <Segmentation></Segmentation>
+        <Segmentation onTargetMove={updateBodyPosition}></Segmentation>
         <canvas
           id="canvas"
           width={CANVAS_WIDTH}

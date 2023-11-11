@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import "./Segmentation.css";
 
 import * as tf from "@tensorflow/tfjs-core";
@@ -23,7 +23,7 @@ const segmenterConfig = {
 };
 
 export type DetectionTarget = {
-  name: "left_hand" | "right_hand" | "body";
+  name: "left_wrist" | "right_wrist" | "body";
   position:
     | {
         x: number;

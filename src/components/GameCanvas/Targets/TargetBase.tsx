@@ -1,16 +1,7 @@
-import {
-  MeshProps,
-  ObjectMap,
-  useFrame,
-  useLoader,
-  useThree,
-} from "@react-three/fiber";
+import { MeshProps, useFrame, useLoader, useThree } from "@react-three/fiber";
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { useHandPositions } from "../../GameProvider";
-import { AnimationMixer, Group, Mesh, Object3DEventMap, Vector3 } from "three";
-import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { useGLTF } from "@react-three/drei";
-import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
+import { AnimationMixer, Mesh, Vector3 } from "three";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 export interface CheckHitParams {
   position: { x: number; y: number };
@@ -75,10 +66,10 @@ export const TargetBase: React.FC<TargetBaseProps> = ({
     const vector = new Vector3();
 
     // Get the mesh position in world space
-    mesh.getWorldPosition(vector);
+    // mesh.getWorldPosition(vector);
 
     // Project the 3D position to NDC space (range -1 to 1)
-    vector.project(camera);
+    // vector.project(camera);
 
     // console.log("projected",corner, vector)
 
@@ -86,8 +77,19 @@ export const TargetBase: React.FC<TargetBaseProps> = ({
     // vector.x = Math.round((0.5 + vector.x / 2) * size.width);
     // vector.y = Math.round((0.5 - vector.y / 2) * size.height);
 
+    // console.log({vector})
+    // vector.x = (vector.x + 1) / 2;
+    // vector.y = (vector.y + 1) / 2;
+
+    vector.setFromMatrixPosition(mesh.matrixWorld);
+    vector.project(camera);
+
+    // Map NDC from [-1, 1] to [0, 1]
     vector.x = (vector.x + 1) / 2;
     vector.y = (vector.y + 1) / 2;
+
+    // Flip the y-coordinate so that 0 is at the top
+    vector.y = 1 - vector.y;
 
     return { x: vector.x, y: vector.y };
   };
