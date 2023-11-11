@@ -139,7 +139,7 @@ export function Segmentation(props: {
       for (const pose of poses) {
         drawSkeleton(pose.keypoints, ctx, {
           drawBodyTarget: true,
-          drawDebugText: true,
+          drawDebugText: false,
           drawHandTarget: true,
         });
       }
