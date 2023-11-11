@@ -2,6 +2,7 @@ import { FFmpeg } from "@ffmpeg/ffmpeg";
 import { toBlobURL, fetchFile } from "@ffmpeg/util";
 import { useRef, useState } from "react";
 import "./CanvasRecorder.css";
+import { uploadDancePost } from "../dances-service";
 const ffmpeg = new FFmpeg();
 
 export function CanvasRecorder() {
@@ -78,11 +79,10 @@ export function CanvasRecorder() {
     console.log("Transcoding complete...");
     const data = await ffmpeg.readFile("output.mp4");
 
-    setDownloadLink(
-      URL.createObjectURL(
-        new Blob([(data as any).buffer], { type: "video/mp4" })
-      )
-    );
+    const videoBlob = new Blob([(data as any).buffer], { type: "video/mp4" });
+    setDownloadLink(URL.createObjectURL(videoBlob));
+
+    await uploadDancePost({ userId: "bela", fitnessStats: { score: 10 } }, videoBlob);
   };
 
   return (
