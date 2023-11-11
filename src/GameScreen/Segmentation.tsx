@@ -38,6 +38,7 @@ export function Segmentation(props: {
   const segmenterRef = useRef<any>();
   const poseDetectorRef = useRef<any>();
   const backgroundImageRef = useRef<any>();
+  const animationRef = useRef<any>();
 
   useEffect(() => {
     (window.navigator as any).getUserMedia(
@@ -76,11 +77,15 @@ export function Segmentation(props: {
       },
       () => {}
     );
+
+    return () => {
+      cancelAnimationFrame(animationRef.current);
+    };
   }, []);
 
   const animationLoop = () => {
     renderSegmentation();
-    requestAnimationFrame(animationLoop);
+    animationRef.current = requestAnimationFrame(animationLoop);
   };
 
   const renderSegmentation = async () => {
