@@ -191,6 +191,15 @@ export function Segmentation(props: {
         const kp1 = keypoints[i];
         const kp2 = keypoints[j];
 
+        const discardFeatures = ["eye", "ear"];
+
+        if (
+          discardFeatures.some((feature) => kp1.name.includes(feature)) ||
+          discardFeatures.some((feature) => kp2.name.includes(feature))
+        ) {
+          return;
+        }
+
         if (
           config.drawHandTarget &&
           (kp2.name === "left_wrist" || kp2.name === "right_wrist")
@@ -255,10 +264,9 @@ export function Segmentation(props: {
     ctx: CanvasRenderingContext2D
   ) => {
     const circle = new Path2D();
-    circle.arc(x, y, 50, 0, 2 * Math.PI);
+    circle.arc(x, y, 10, 0, 2 * Math.PI);
     ctx.fillStyle = "red";
     ctx.fill(circle);
-    ctx.stroke(circle);
     ctx.fillStyle = "white";
   };
 
