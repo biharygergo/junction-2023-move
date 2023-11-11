@@ -1,13 +1,23 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import "./GameScreen.css";
 import { Segmentation } from "./Segmentation";
 import { GameCanvas } from "../components/GameCanvas";
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from "./constants";
-import CanvasRecorder from "./CanvasRecorder";
+import { Recorder } from "./CanvasRecorder";
 import { useGameState } from "../components/GameProvider";
 
 function GameScreen() {
-  const { bodyPositions, updateBodyPosition } = useGameState();
+  const { bodyPositions, updateBodyPosition, appState, updateLoadingState } =
+    useGameState();
+  const recorderRef = useRef(new Recorder());
+
+  const loadedItems = Object.entries(appState.loadingChecklist);
+
+  useEffect(() => {
+    recorderRef.current.loadFfmpeg().then(() => {
+      updateLoadingState({ ffmpeg: true });
+    });
+  }, []);
 
   return (
     <div className="page-wrapper">
@@ -23,8 +33,28 @@ function GameScreen() {
           width={CANVAS_WIDTH}
           height={CANVAS_HEIGHT}
         ></canvas>
-        <CanvasRecorder></CanvasRecorder>
         <GameCanvas />
+        <ul className="loadedItems">
+          {loadedItems.map((entry) => (
+            <li key={entry[0]}>
+              {entry[0]}:{entry[1] ? "Loaded" : "Loading"}
+            </li>
+          ))}
+        </ul>
+
+        <div className="controls">
+          <button onClick={() => recorderRef.current.startRecording()}>
+            Record
+          </button>
+          <button onClick={() => recorderRef.current.endRecording()}>
+            Stop recording
+          </button>
+          {recorderRef.current.downloadLink && (
+            <a href={recorderRef.current.downloadLink} download>
+              Download video
+            </a>
+          )}
+        </div>
       </div>
     </div>
   );

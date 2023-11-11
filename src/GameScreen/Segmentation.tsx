@@ -10,6 +10,7 @@ import * as posedetection from "@tensorflow-models/pose-detection";
 
 import "@mediapipe/selfie_segmentation";
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from "./constants";
+import { useGameState } from "../components/GameProvider";
 
 const model = bodySegmentation.SupportedModels.MediaPipeSelfieSegmentation; // or 'BodyPix'
 const poseDetectionModel = posedetection.SupportedModels.MoveNet;
@@ -39,21 +40,29 @@ export function Segmentation(props: {
   const poseDetectorRef = useRef<any>();
   const backgroundImageRef = useRef<any>();
   const animationRef = useRef<any>();
+  const { updateLoadingState } = useGameState();
 
   useEffect(() => {
-    (window.navigator as any).getUserMedia(
-      { video: { width: CANVAS_WIDTH, height: CANVAS_HEIGHT }, audio: false },
-      async function (localMediaStream: any) {
+    (window.navigator as any).mediaDevices
+      .getUserMedia({
+        video: { width: CANVAS_WIDTH, height: CANVAS_HEIGHT },
+        audio: false,
+      })
+      .then((localMediaStream: any) => {
         const video = document.querySelector("video") as HTMLVideoElement;
         video.srcObject = localMediaStream;
         console.log("Got video stream...");
+        updateLoadingState({ webcamPermission: true });
 
         video.addEventListener("loadedmetadata", () => {
           console.log("Metadata loaded...");
+          updateLoadingState({ webcamStream: true });
+
           bodySegmentation
             .createSegmenter(model, segmenterConfig as any)
             .then(async (segmenter) => {
               console.log("Loaded segmenter...");
+
               await tf.setBackend("webgl");
 
               segmenterRef.current = segmenter;
@@ -67,14 +76,14 @@ export function Segmentation(props: {
 
               backgroundImageRef.current = new Image();
               backgroundImageRef.current.onload = function () {
+                updateLoadingState({ tensorflow: true });
+
                 animationLoop();
               };
               backgroundImageRef.current.src = `${process.env.PUBLIC_URL}/img/background_test.png`;
             });
         });
-      },
-      () => {}
-    );
+      });
 
     return () => {
       cancelAnimationFrame(animationRef.current);

@@ -5,33 +5,51 @@ import "./CanvasRecorder.css";
 import { uploadDancePost } from "../dances-service";
 const ffmpeg = new FFmpeg();
 
-export function CanvasRecorder() {
-  const recorderRef = useRef<MediaRecorder>();
-  const [downloadLink, setDownloadLink] = useState<string>("");
+export class Recorder {
+  recorderRef?: MediaRecorder;
+  downloadLink?: string;
 
-  const loadFfmpeg = async () => {
-    const baseURL = "https://unpkg.com/@ffmpeg/core-mt@0.12.4/dist/umd";
-    ffmpeg.on("log", ({ message }: any) => {
-      console.log(message);
-    });
-    // toBlobURL is used to bypass CORS issue, urls with the same
-    // domain can be used directly.
-    await ffmpeg.load({
-      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
-      wasmURL: await toBlobURL(
-        `${baseURL}/ffmpeg-core.wasm`,
-        "application/wasm"
-      ),
-      workerURL: await toBlobURL(
-        `${baseURL}/ffmpeg-core.worker.js`,
-        "text/javascript"
-      ),
-    });
+  loaded: boolean = false;
+
+  loadFfmpeg = async () => {
+    if (!this.loaded) {
+      const baseURL = "https://unpkg.com/@ffmpeg/core-mt@0.12.4/dist/umd";
+      ffmpeg.on("log", ({ message }: any) => {
+        console.log(message);
+      });
+      // toBlobURL is used to bypass CORS issue, urls with the same
+      // domain can be used directly.
+      await ffmpeg.load({
+        coreURL: await toBlobURL(
+          `${baseURL}/ffmpeg-core.js`,
+          "text/javascript"
+        ),
+        wasmURL: await toBlobURL(
+          `${baseURL}/ffmpeg-core.wasm`,
+          "application/wasm"
+        ),
+        workerURL: await toBlobURL(
+          `${baseURL}/ffmpeg-core.worker.js`,
+          "text/javascript"
+        ),
+      });
+      this.loaded = true;
+    }
   };
 
-  const startRecording = async () => {
+  videoReady = async (props: { url: string; blob: any }) => {
+    const blob = await this.transcode(
+      new Uint8Array(await props.blob.arrayBuffer())
+    );
+    await uploadDancePost(
+      { userId: "bela", fitnessStats: { score: 10 } },
+      blob
+    );
+  };
+
+  startRecording = async () => {
     console.log("Loading ffmpeg");
-    await loadFfmpeg();
+    await this.loadFfmpeg();
     console.log("Loaded ffmpeg");
     const canvas = document.getElementById(
       "canvas-export"
@@ -43,34 +61,31 @@ export function CanvasRecorder() {
       mimeType: "video/webm; codecs=vp9",
     });
 
-    recorderRef.current = mediaRecorder;
+    this.recorderRef = mediaRecorder;
 
     mediaRecorder.start(0);
     console.log("Starting recording...");
 
     const chunks: any[] = [];
-    mediaRecorder.ondataavailable = function (e: any) {
+    mediaRecorder.ondataavailable = (e: any) => {
       chunks.push(e.data);
       console.log("Got chunk...");
     };
 
-    mediaRecorder.onstop = function (event) {
+    mediaRecorder.onstop = (event) => {
       var blob = new Blob(chunks, {
         type: "video/webm",
       });
       var url = URL.createObjectURL(blob);
-      videoReady({ url, blob }); // resolve both blob and url in an object
+      this.videoReady({ url, blob }); // resolve both blob and url in an object
     };
   };
-  const endRecording = () => {
-    recorderRef.current?.stop();
+
+  endRecording = () => {
+    this.recorderRef?.stop();
   };
 
-  const videoReady = async (props: { url: string; blob: any }) => {
-    await transcode(new Uint8Array(await props.blob.arrayBuffer()));
-  };
-
-  const transcode = async (webcamData: any) => {
+  transcode = async (webcamData: any) => {
     const name = "record.webm";
     console.log("Transcoding...");
     await ffmpeg.writeFile(name, webcamData);
@@ -80,22 +95,8 @@ export function CanvasRecorder() {
     const data = await ffmpeg.readFile("output.mp4");
 
     const videoBlob = new Blob([(data as any).buffer], { type: "video/mp4" });
-    setDownloadLink(URL.createObjectURL(videoBlob));
+    this.downloadLink = URL.createObjectURL(videoBlob);
 
-    await uploadDancePost({ userId: "bela", fitnessStats: { score: 10 } }, videoBlob);
+    return videoBlob;
   };
-
-  return (
-    <div className="controls">
-      <button onClick={() => startRecording()}>Record</button>
-      <button onClick={() => endRecording()}>Stop recording</button>
-      {downloadLink && (
-        <a href={downloadLink} download>
-          Download video
-        </a>
-      )}
-    </div>
-  );
 }
-
-export default CanvasRecorder;
