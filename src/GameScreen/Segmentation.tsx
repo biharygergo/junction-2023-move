@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./Segmentation.css";
 
 import * as tf from "@tensorflow/tfjs-core";
@@ -14,6 +14,9 @@ import {
   Pose,
 } from "@tensorflow-models/body-segmentation/dist/body_pix/impl/types";
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from "./constants";
+import { FFmpeg } from "@ffmpeg/ffmpeg";
+import { toBlobURL, fetchFile } from "@ffmpeg/util";
+const ffmpeg = new FFmpeg();
 
 const model = bodySegmentation.SupportedModels.MediaPipeSelfieSegmentation; // or 'BodyPix'
 const poseDetectionModel = posedetection.SupportedModels.MoveNet;
@@ -35,8 +38,11 @@ export type DetectionTarget = {
 export function Segmentation(props: {
   onTargetMove?: (target: DetectionTarget) => void;
 }) {
+  const [downloadLink, setDownloadLink] = useState<string>("");
   const segmenterRef = useRef<any>();
   const poseDetectorRef = useRef<any>();
+  const recorderRef = useRef<MediaRecorder>();
+  const backgroundImageRef = useRef<any>();
 
   useEffect(() => {
     // Not showing vendor prefixes.
@@ -63,8 +69,14 @@ export function Segmentation(props: {
                     posedetection.movenet.modelType.SINGLEPOSE_LIGHTNING,
                 }
               );
+
               poseDetectorRef.current = poseDetector;
-              animationLoop();
+
+              backgroundImageRef.current = new Image();
+              backgroundImageRef.current.onload = function () {
+                animationLoop();
+              };
+              backgroundImageRef.current.src = `${process.env.PUBLIC_URL}/img/background_test.png`;
             });
         });
       },
@@ -102,6 +114,22 @@ export function Segmentation(props: {
       ctx.strokeRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
       ctx.strokeStyle = "white";
       renderPoses(poses);
+
+      // Draw export canvas here...
+      const secondCanvas = document.getElementById(
+        "canvas-export"
+      ) as HTMLCanvasElement;
+
+      const ctx2 = secondCanvas.getContext("2d");
+      ctx2?.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT); // clear the image first
+      ctx2?.drawImage(
+        backgroundImageRef.current,
+        0,
+        0,
+        CANVAS_WIDTH,
+        CANVAS_HEIGHT
+      );
+      ctx2?.drawImage(ctx.canvas, 0, 0);
     }
   };
 
@@ -240,9 +268,93 @@ export function Segmentation(props: {
     };
   };
 
+  const loadFfmpeg = async () => {
+    const baseURL = "https://unpkg.com/@ffmpeg/core-mt@0.12.4/dist/umd";
+    ffmpeg.on("log", ({ message }: any) => {
+      console.log(message);
+    });
+    // toBlobURL is used to bypass CORS issue, urls with the same
+    // domain can be used directly.
+    await ffmpeg.load({
+      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
+      wasmURL: await toBlobURL(
+        `${baseURL}/ffmpeg-core.wasm`,
+        "application/wasm"
+      ),
+      workerURL: await toBlobURL(
+        `${baseURL}/ffmpeg-core.worker.js`,
+        "text/javascript"
+      ),
+    });
+  };
+
+  const startRecording = async () => {
+    console.log("Loading ffmpeg");
+    await loadFfmpeg();
+    console.log("Loaded ffmpeg");
+    const canvas = document.getElementById("canvas-export") as HTMLCanvasElement;
+
+    var stream = canvas.captureStream(25);
+
+    const mediaRecorder = new MediaRecorder(stream, {
+      mimeType: "video/webm; codecs=vp9",
+    });
+
+    recorderRef.current = mediaRecorder;
+
+    mediaRecorder.start(0);
+    console.log("Starting recording...");
+
+    const chunks: any[] = [];
+    mediaRecorder.ondataavailable = function (e: any) {
+      chunks.push(e.data);
+      console.log("Got chunk...");
+    };
+
+    mediaRecorder.onstop = function (event) {
+      var blob = new Blob(chunks, {
+        type: "video/webm",
+      });
+      var url = URL.createObjectURL(blob);
+      videoReady({ url, blob }); // resolve both blob and url in an object
+    };
+  };
+  const endRecording = () => {
+    recorderRef.current?.stop();
+  };
+
+  const videoReady = async (props: { url: string; blob: any }) => {
+    await transcode(new Uint8Array(await props.blob.arrayBuffer()));
+  };
+
+  const transcode = async (webcamData: any) => {
+    const message = document.getElementById("message");
+    const name = "record.webm";
+    console.log("Transcoding...");
+    await ffmpeg.writeFile(name, webcamData);
+    const command = `-i ${name} -filter:v fps=25 output.mp4`;
+    await ffmpeg.exec(command.split(" "));
+    console.log("Transcoding complete...");
+    const data = await ffmpeg.readFile("output.mp4");
+
+    setDownloadLink(
+      URL.createObjectURL(
+        new Blob([(data as any).buffer], { type: "video/mp4" })
+      )
+    );
+  };
   return (
     <>
       <video id="video" autoPlay={true}></video>
+      <div className="controls">
+        <button onClick={() => startRecording()}>Record</button>
+        <button onClick={() => endRecording()}>Stop recording</button>
+        {downloadLink && (
+          <a href={downloadLink} download>
+            Download video
+          </a>
+        )}
+      </div>
     </>
   );
 }

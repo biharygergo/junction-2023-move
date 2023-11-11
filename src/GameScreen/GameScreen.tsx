@@ -16,6 +16,11 @@ function GameScreen() {
           width={CANVAS_WIDTH}
           height={CANVAS_HEIGHT}
         ></canvas>
+        <canvas
+          id="canvas-export"
+          width={CANVAS_WIDTH}
+          height={CANVAS_HEIGHT}
+        ></canvas>
         {/*         <GameCanvas />
          */}{" "}
       </div>
