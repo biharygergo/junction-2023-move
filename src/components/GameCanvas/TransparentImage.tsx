@@ -27,7 +27,7 @@ const TransparentImage: React.FC<{ url: string, position: any, scale: number }> 
 
     return (
         <mesh geometry={plane} position={position} scale={scale}>
-            <meshBasicMaterial attach="material" map={texture} transparent={true} />
+            <meshBasicMaterial attach="material" map={texture} transparent={true} opacity={1} />
         </mesh>
     );
 };

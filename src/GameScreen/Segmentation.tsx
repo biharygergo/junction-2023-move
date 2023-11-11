@@ -45,6 +45,7 @@ export function Segmentation(props: {
   const backgroundImageRef = useRef<any>();
 
   useEffect(() => {
+
     // Not showing vendor prefixes.
     (window.navigator as any).getUserMedia(
       { video: { width: CANVAS_WIDTH, height: CANVAS_HEIGHT }, audio: false },
