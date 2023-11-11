@@ -11,7 +11,7 @@ import {GameProvider} from "./components/GameProvider";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
+    element: <GameScreen />,
   },
   {
     path: "/game",
