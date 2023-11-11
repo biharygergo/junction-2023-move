@@ -17,9 +17,9 @@ function Reel() {
   };
 
   return (
-    <div className="page-wrapper">
-      <div className="game-wrapper">
-        <h1>Dances</h1>
+    <div className="reels-wrapper">
+      <div className="reels-content-wrapper">
+        <h1 className="title">Your friends are moving! 🕺</h1>
         {posts.map((post) => (
           <div className="section" key={post.id}>
             <div className="section-content">
@@ -38,6 +38,10 @@ function Reel() {
                   ref={(ref) => (videoRefs.current[post.id] = ref)}
                   src={post.videoPublicUrl}
                 ></video>
+              </div>
+              <div className="meta">
+                <h3 className="userName">💃🏻 {post.userId}</h3>
+                <h5 className="fitnessScore">🏆 {post.fitnessStats.score} points</h5>
               </div>
             </div>
           </div>

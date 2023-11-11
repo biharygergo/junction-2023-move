@@ -1,23 +1,28 @@
-.page-wrapper {
+.reels-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100vh;
 }
-.game-wrapper {
+
+.reels-content-wrapper {
   max-width: 360px;
   max-height: 640px;
   height: 100%;
   width: 100%;
-  background: white;
+  background: black;
   border-radius: 24px;
   position: relative;
   overflow: auto;
   border: 5px solid black;
 }
 
+.title {
+  color: white;
+  margin-left: 1rem;
+}
+
 .section {
-  height: 100%;
 }
 
 .section-content {
@@ -47,4 +52,16 @@
 
 .play-button .material-symbols-outlined {
   font-size: 50px;
+}
+
+.meta {
+  color: white;
+}
+
+.userName {
+  margin-bottom: 0.2rem;
+}
+
+.fitnessScore {
+  margin-top: 0;
 }
