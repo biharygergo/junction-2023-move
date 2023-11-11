@@ -33,7 +33,7 @@ function GameScreen() {
           width={CANVAS_WIDTH}
           height={CANVAS_HEIGHT}
         ></canvas>
-        {/* <GameCanvas /> */}
+        <GameCanvas />
         <ul className="loadedItems">
           {loadedItems.map((entry) => (
             <li key={entry[0]}>
