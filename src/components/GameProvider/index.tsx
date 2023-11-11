@@ -4,9 +4,9 @@ import { DetectionTarget } from "../../GameScreen/Segmentation";
 // Define a type for the hand positions
 type GameState = {
   bodyPositions: {
-    rightHand: { x: number; y: number; name: string } | undefined;
-    leftHand: { x: number; y: number; name: string } | undefined;
-    body: { x: number; y: number; name: string } | undefined;
+    rightHand: { x: number; y: number; name?: string } | undefined;
+    leftHand: { x: number; y: number; name?: string } | undefined;
+    body: { x: number; y: number; name?: string } | undefined;
   };
   updateBodyPosition?: (target: DetectionTarget) => void;
 };
@@ -32,17 +32,51 @@ export const GameProvider: any = ({ children }: any) => {
   // useCallback will return a memoized version of the callback that only changes if one of the dependencies has changed.
   const updateBodyPosition = useCallback((target: DetectionTarget) => {
     if (target.name === "left_wrist") {
-      setBodyPositions((prevPositions) => ({
-        ...prevPositions,
-        leftHand: target,
-      }));
+      if (target.position === undefined) {
+        setBodyPositions((prevPositions) => ({
+          ...prevPositions,
+          leftHand: undefined
+        }));
+      }
+      else {
+        const position = target.position;
+        setBodyPositions((prevPositions) => ({
+          ...prevPositions,
+          leftHand: {...position},
+        }));
+      }
+
     } else if (target.name === "right_wrist") {
-      setBodyPositions((prevPositions) => ({
-        ...prevPositions,
-        rightHand: target,
-      }));
+      if (target.position === undefined) {
+        setBodyPositions((prevPositions) => ({
+          ...prevPositions,
+          rightHand: undefined
+        }));
+      }
+      else {
+        const position = target.position;
+        setBodyPositions((prevPositions) => ({
+          ...prevPositions,
+          rightHand: {...position},
+        }));
+      }
+
+
     } else if (target.name === "body") {
-      setBodyPositions((prevPositions) => ({ ...prevPositions, body: target }));
+
+      if (target.position === undefined) {
+        setBodyPositions((prevPositions) => ({
+          ...prevPositions,
+          body: undefined
+        }));
+      }
+      else {
+        const position = target.position;
+        setBodyPositions((prevPositions) => ({
+          ...prevPositions,
+          body: {...position},
+        }));
+      }
     }
   }, []);
 

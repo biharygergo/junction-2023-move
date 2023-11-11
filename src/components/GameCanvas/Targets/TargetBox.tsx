@@ -9,7 +9,7 @@ export interface BoxProps extends MeshProps {
   startTime: number;
 }
 
-const TargetBox: React.FC<BoxProps> = ({ corner, startTime, ...props }) => {
+const TargetBox: React.FC<BoxProps> = ({ corner, startTime }) => {
   // const { leftHand, rightHand } = { leftHand: [-1, 1], rightHand: [1, 1] };
   const {
     bodyPositions: { leftHand, rightHand },
@@ -34,21 +34,26 @@ const TargetBox: React.FC<BoxProps> = ({ corner, startTime, ...props }) => {
   }, [corner]);
 
   const checkHit = ({ mesh, position }: CheckHitParams) => {
+    // console.log(position)
     if (wasHit) return true;
 
     if (mesh.position.z < hitArea[0] || mesh.position.z > hitArea[1]) {
       return false;
     }
 
-    const distanceThreshold = 2;
+    // const distanceThresholdDown = 0.9;
+    // const distanceThresholdUp = 1.8;
+    const distanceThreshold = 1.8
 
     if (leftHand !== undefined && (corner === 2 || corner === 4)) {
-      const distanceLeftHand = mesh.position.distanceTo(
-        new Vector3(leftHand.x, leftHand.y, mesh.position.z),
+      const distanceLeftHand = new Vector3(position.x, position.y, 0).distanceTo(
+        new Vector3(leftHand.x, leftHand.y, 0),
       );
 
-      console.log({ corner, distanceLeftHand, leftHand, mesh: mesh.position });
-      if (distanceLeftHand < distanceThreshold) {
+
+      if (
+        distanceLeftHand < distanceThreshold
+      ) {
         console.log("HIT LEFT");
         setWasHit(true);
         return true;
@@ -56,13 +61,20 @@ const TargetBox: React.FC<BoxProps> = ({ corner, startTime, ...props }) => {
     }
 
     if (rightHand !== undefined && (corner === 1 || corner === 3)) {
-      const distanceRightHand = mesh.position.distanceTo(
-        new Vector3(rightHand.x, rightHand.y, mesh.position.z),
+      const distanceRightHand = new Vector3(position.x, position.y, 0).distanceTo(
+          new Vector3(rightHand.x, rightHand.y, 0),
       );
 
-      console.log({ corner, distanceRightHand, rightHand,mesh: mesh.position });
+      // console.log({
+      //   corner,
+      //   distanceRightHand,
+      //   rightHand,
+      //   mesh: mesh.position,
+      // });
 
-      if (distanceRightHand < distanceThreshold) {
+      if (
+        distanceRightHand < distanceThreshold
+      ) {
         console.log("HIT RIGHT");
         setWasHit(true);
         return true;
@@ -83,7 +95,7 @@ const TargetBox: React.FC<BoxProps> = ({ corner, startTime, ...props }) => {
       staticModelSource={"/model/Cube_static.gltf"}
       explodedModelSource={"/model/Cube_exploded.gltf"}
       targetPosition={targetPosition}
-      speed={0.01}
+      speed={0.1}
       checkHit={checkHit}
       scale={0.08}
       // recolor={recolor}

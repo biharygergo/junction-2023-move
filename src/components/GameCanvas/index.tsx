@@ -1,4 +1,4 @@
-import React, { Suspense, useState } from "react";
+import React, { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import TargetBox from "./Targets/TargetBox";
 import TransparentImage from "./TransparentImage";
@@ -91,17 +91,17 @@ const targets = new Array(120).fill({}).map((value, index) => {
     // type: index % 2 ? "box" : "jump",
     type: "box",
     startTime: index * 5 + 2,
-    param: (index % 3) + 1,
+    param: index % 4 + 1,
   };
 }) as any;
 
 
 export const GameCanvas = () => {
-  const [startScene, setStartScene] = useState(false);
+  // const [startScene, setStartScene] = useState(false);
 
-  const handleStartScene = () => {
-    setStartScene(true);
-  };
+  // const handleStartScene = () => {
+  //   setStartScene(true);
+  // };
 
   return (
       <div

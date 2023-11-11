@@ -17,14 +17,14 @@ const poseDetectionModel = posedetection.SupportedModels.MoveNet;
 const segmenterConfig = {
   runtime: "mediapipe", // or 'tfjs'
   modelType: "general", // or 'landscape'
-  locateFile: (path: string, prefix?: string) => {
+  locateFile: (path: string) => {
     return `https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation@0.1/${path}`;
   },
 };
 
 export type DetectionTarget = {
   name: "left_wrist" | "right_wrist" | "body";
-  position:
+  position?:
     | {
         x: number;
         y: number;
@@ -57,15 +57,13 @@ export function Segmentation(props: {
               await tf.setBackend("webgl");
 
               segmenterRef.current = segmenter;
-              const poseDetector = await posedetection.createDetector(
+              poseDetectorRef.current = await posedetection.createDetector(
                 poseDetectionModel,
                 {
                   modelType:
                     posedetection.movenet.modelType.SINGLEPOSE_LIGHTNING,
                 }
               );
-
-              poseDetectorRef.current = poseDetector;
 
               backgroundImageRef.current = new Image();
               backgroundImageRef.current.onload = function () {
