@@ -19,7 +19,7 @@ const CanvasVideoTextureObject: React.FC = () => {
       mesh.position.set(0, 0, 0);
       scene.add(mesh);
       meshRef.current = mesh;
-      mesh.scale.set(1, 1, 1)
+      mesh.scale.set(-1, 1, 1)
     }
 
     // Cleanup
