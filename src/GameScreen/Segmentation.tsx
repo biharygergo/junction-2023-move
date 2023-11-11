@@ -97,6 +97,10 @@ export function Segmentation(props: {
       ctx.globalCompositeOperation = "source-in";
       ctx.drawImage(video, 0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
       ctx.globalCompositeOperation = "source-over";
+      ctx.strokeStyle = "purple";
+      ctx.lineWidth = 4;
+      ctx.strokeRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+      ctx.strokeStyle = "white";
       renderPoses(poses);
     }
   };
@@ -181,9 +185,9 @@ export function Segmentation(props: {
     ctx.fillStyle = "white";
 
     props.onTargetMove?.({
-        name: 'body',
-        ...convertToRelativePoint(x, y)
-      });
+      name: "body",
+      ...convertToRelativePoint(x, y),
+    });
   };
 
   const drawHandTarget = (
