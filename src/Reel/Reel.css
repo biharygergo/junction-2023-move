@@ -48,6 +48,8 @@
   padding: 3rem;
   border-radius: 50%;
   transform: translate(-50%, -50%);
+  opacity: 0.8;
+  cursor: pointer;
 }
 
 .play-button .material-symbols-outlined {
@@ -59,9 +61,10 @@
 }
 
 .userName {
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.5rem;
 }
 
 .fitnessScore {
   margin-top: 0;
+  margin-bottom: 0.2rem;
 }
