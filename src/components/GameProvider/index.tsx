@@ -18,12 +18,12 @@ type GameState = {
   addMiss: () => void;
   gameStarted: boolean;
   startGame: () => void;
-
 };
 
 type AppState = {
   loadingChecklist: Checklist;
   allLoaded: boolean;
+  hasPosted: boolean;
 };
 
 type Checklist = {
@@ -49,6 +49,7 @@ const GameContext = createContext<GameState>({
   appState: {
     loadingChecklist: DEFAULT_CHECKLIST,
     allLoaded: false,
+    hasPosted: false,
   },
   updateLoadingState: () => {},
   streak: 1,
@@ -56,7 +57,7 @@ const GameContext = createContext<GameState>({
   addHit: () => {},
   addMiss: () => {},
   gameStarted: false,
-  startGame: () => {}
+  startGame: () => {},
 });
 
 // Create a provider component for the hand positions
@@ -71,27 +72,29 @@ export const GameProvider: any = ({ children }: any) => {
 
   const [score, setScore] = useState<GameState["score"]>(0);
   const [streak, setStreak] = useState<GameState["streak"]>(1);
-  const [gameStarted, setGameStarted] = useState<GameState["gameStarted"]>(false);
+  const [gameStarted, setGameStarted] =
+    useState<GameState["gameStarted"]>(false);
 
   const [appState, setAppState] = useState<AppState>({
     loadingChecklist: DEFAULT_CHECKLIST,
     allLoaded: false,
+    hasPosted: false,
   });
 
   // console.log('GameProvider', bodyPositions)
 
   const addHit = () => {
     setScore(score + streak);
-    setStreak(streak + 1)
+    setStreak(streak + 1);
   };
 
   const addMiss = () => {
-    setStreak(1)
+    setStreak(1);
   };
 
   const startGame = () => {
-    setGameStarted(true)
-  }
+    setGameStarted(true);
+  };
 
   // useCallback will return a memoized version of the callback that only changes if one of the dependencies has changed.
   const updateBodyPosition = useCallback((target: DetectionTarget) => {
@@ -138,7 +141,7 @@ export const GameProvider: any = ({ children }: any) => {
   }, []);
 
   const updateAppState = useCallback((state: Partial<AppState>) => {
-    setAppState((oldState) => ({ ...oldState, state }));
+    setAppState((oldState) => ({ ...oldState, ...state }));
   }, []);
 
   const updateLoadingState = useCallback(
@@ -152,12 +155,12 @@ export const GameProvider: any = ({ children }: any) => {
           ...oldState,
           loadingChecklist: newLoadedChecklist,
           allLoaded: Object.values(newLoadedChecklist).every(
-            (loaded) => !!loaded,
+            (loaded) => !!loaded
           ),
         };
       });
     },
-    [],
+    []
   );
 
   // Include the updateBodyPosition function in the context value
@@ -172,7 +175,7 @@ export const GameProvider: any = ({ children }: any) => {
     score,
     streak,
     gameStarted,
-    startGame
+    startGame,
   };
 
   return (
@@ -184,5 +187,3 @@ export const GameProvider: any = ({ children }: any) => {
 export const useGameState = () => {
   return useContext(GameContext);
 };
-
-

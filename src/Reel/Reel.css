@@ -12,7 +12,16 @@
 
   color: white;
   margin-left: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 5rem;
+  margin-top: 5rem;
+  text-align: center;
+}
+
+.subtitle {
+  font-family: "Press Start 2P", sans-serif;
+
+  color: white;
+  margin-bottom: 1rem;
   text-align: center;
 }
 
@@ -114,4 +123,30 @@
   padding: 0;
   display: flex;
   align-items: center;
+}
+
+.no-post {
+  box-shadow: 0 0 10px magenta;
+  border-radius: 20px;
+  padding: 2rem;
+  margin: 5rem 0;
+  color: white;
+  max-width: 800px;
+  margin: 0 auto;
+
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.sneak-peek {
+  background: none;
+  border: 1px solid cyan;
+  border-radius: 20px;
+  color: white;
+  padding: 0.5rem 2rem;
+  font-size: 18px;
+
+  margin-top: 2rem;
+  cursor: pointer;
 }

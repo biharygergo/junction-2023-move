@@ -5,64 +5,6 @@ import "./CanvasRecorder.css";
 import { uploadDancePost } from "../dances-service";
 const ffmpeg = new FFmpeg();
 
-const usernames = [
-  "SnappyCarrot9😋",
-  "SneezyIguana31🙈",
-  "SnappyApple89😱",
-  "ZippyFlamingo99🐵",
-  "JumpyElephant87😄",
-  "CheeryGiraffe47🙈",
-  "BreezyHippo28😋",
-  "SneezyHippo78😎",
-  "ZippyCarrot77😱",
-  "BreezyElephant53😎",
-  "SneezyElephant74😎",
-  "BreezyJaguar25😆",
-  "ZippyApple83😋",
-  "HappyFlamingo16😉",
-  "BreezyJaguar51😉",
-  "SnappyJaguar73🙈",
-  "ChirpyElephant51😎",
-  "ChirpyGiraffe30😄",
-  "BouncyApple30😄",
-  "SnappyIguana19🐵",
-  "ZippyBanana71😉",
-  "SillyHippo42😱",
-  "CheeryHippo94😄",
-  "SneezyBanana19😊",
-  "SnappyElephant69😆",
-  "JumpyIguana57😊",
-  "HappyGiraffe97😉",
-  "HappyGiraffe38😆",
-  "SillyApple39😉",
-  "HappyApple82🐵",
-  "HappyBanana43😆",
-  "SneezyHippo84😆",
-  "SnappyDaisy2🙈",
-  "SnappyGiraffe62😆",
-  "SneezyFlamingo2😋",
-  "SnappyHippo1😱",
-  "SillyGiraffe93😋",
-  "ChirpyDaisy32😆",
-  "BouncyFlamingo32😆",
-  "SneezyFlamingo33😄",
-  "ZippyCarrot56😱",
-  "BouncyDaisy86😄",
-  "CheeryCarrot15😆",
-  "SillyFlamingo24😆",
-  "SnappyFlamingo19😱",
-  "SillyBanana71😂",
-  "HappyJaguar60😆",
-  "ZippyFlamingo10😋",
-  "ZippyElephant17😆",
-  "BreezyJaguar85😉"
-];
-
-function getRandomUsername() {
-  const randomIndex = Math.floor(Math.random() * usernames.length);
-  return usernames[randomIndex];
-}
-
 export class Recorder {
   recorderRef?: MediaRecorder;
   downloadLink?: string;
@@ -70,6 +12,8 @@ export class Recorder {
   loaded: boolean = false;
   isRecording: boolean = false;
   isTranscoding: boolean = false;
+
+  constructor(private readonly onTranscodingReady: (blob: any) => void) {}
 
   loadFfmpeg = async () => {
     if (!this.loaded) {
@@ -102,10 +46,7 @@ export class Recorder {
     const blob = await this.transcode(
       new Uint8Array(await props.blob.arrayBuffer())
     );
-    await uploadDancePost(
-      { userId: getRandomUsername(), fitnessStats: { score: 10 } },
-      blob
-    );
+    this.onTranscodingReady(blob);
     this.isTranscoding = false;
   };
 

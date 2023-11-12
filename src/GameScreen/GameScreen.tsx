@@ -8,6 +8,8 @@ import { useGameState } from "../components/GameProvider";
 import { useNavigate } from "react-router-dom";
 import UploadModal from "../components/UploadModal";
 import AudioPlayer from "../components/Audio/Audio";
+import { uploadDancePost } from "../dances-service";
+import { getRandomUsername } from "./usernames";
 
 function isRunningInChrome() {
   const isChromium = (window as any).chrome;
@@ -45,9 +47,11 @@ function GameScreen() {
     appState,
     updateLoadingState,
   } = useGameState();
-  const recorderRef = useRef(new Recorder());
+  const recorderRef = useRef(new Recorder((blob) => transcodingReady(blob)));
   const navigate = useNavigate();
   const isChrome = useMemo(() => isRunningInChrome(), []);
+
+  const scoreRef = useRef(0);
 
   const loadedItems = Object.entries(appState.loadingChecklist);
 
@@ -62,6 +66,20 @@ function GameScreen() {
       navigate("/reels");
     }
   }, [recorderRef.current.downloadLink]);
+
+  useEffect(() => {
+    scoreRef.current = score;
+  }, [score]);
+
+  const transcodingReady = async (blob: any) => {
+    await uploadDancePost(
+      {
+        userId: getRandomUsername(),
+        fitnessStats: { score: scoreRef.current },
+      },
+      blob
+    );
+  };
 
   const clickStart = () => {
     const recordingStart = 5;
