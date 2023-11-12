@@ -92,9 +92,13 @@ export function Segmentation(props: {
   const startRecordingInternal = useRef<boolean>(false);
 
   const levelInternal = useRef<any>();
+  const loadedInternal = useRef(false);
 
   useEffect(() => {
     levelInternal.current = selectedLevel;
+    if (backgroundImageRef.current) {
+      backgroundImageRef.current.src = `${process.env.PUBLIC_URL}/img/${levelInternal.current.exportedBackground}`;
+    }
   }, [selectedLevel]);
 
   useEffect(() => {
@@ -174,11 +178,14 @@ export function Segmentation(props: {
 
               backgroundImageRef.current = new Image();
               backgroundImageRef.current.onload = function () {
-                updateLoadingState({ tensorflow: true });
+                if (!loadedInternal.current) {
+                  updateLoadingState({ tensorflow: true });
 
-                animationLoop(0);
+                  animationLoop(0);
+                  loadedInternal.current = true;
+                }
               };
-              backgroundImageRef.current.src = `${process.env.PUBLIC_URL}/img/${levelInternal.current.background}`;
+              backgroundImageRef.current.src = `${process.env.PUBLIC_URL}/img/${levelInternal.current.exportedBackground}`;
             });
         });
       });
