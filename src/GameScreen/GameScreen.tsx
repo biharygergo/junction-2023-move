@@ -55,8 +55,20 @@ function GameScreen() {
     selectedLevel,
   } = useGameState();
   const recorderRef = useRef(
-    new Recorder((blob) => transcodingReady(blob), selectedLevel)
+    new Recorder(
+      (blob) => transcodingReady(blob),
+      selectedLevel,
+      "canvas-export"
+    )
   );
+
+  const transparentRecorderRef = useRef(
+    new Recorder((blob) => {}, selectedLevel, "camera-transparent")
+  );
+  const skeletonRecorderRef = useRef(
+    new Recorder((blob) => {}, selectedLevel, "skeleton-canvas")
+  );
+
   const navigate = useNavigate();
   const isChrome = useMemo(() => isRunningInChrome(), []);
 
@@ -69,7 +81,8 @@ function GameScreen() {
   useEffect(() => {
     recorderRef.current = new Recorder(
       (blob) => transcodingReady(blob),
-      selectedLevel
+      selectedLevel,
+      "canvas-export"
     );
     currentLevelIdRef.current = selectedLevel.id;
   }, [selectedLevel]);
@@ -206,9 +219,44 @@ function GameScreen() {
           width={CANVAS_WIDTH}
           height={CANVAS_HEIGHT}
         ></canvas>
+        <canvas
+          id="camera-transparent"
+          width={CANVAS_WIDTH}
+          height={CANVAS_HEIGHT}
+        ></canvas>
+        <canvas
+          id="skeleton-canvas"
+          width={CANVAS_WIDTH}
+          height={CANVAS_HEIGHT}
+        ></canvas>
         <GameCanvas />
 
         {recorderRef.current.isTranscoding && <UploadModal />}
+      </div>
+      <div className="controls">
+        <button onClick={() => transparentRecorderRef.current.startRecording()}>
+          Record transparent
+        </button>
+        <button onClick={() => transparentRecorderRef.current.endRecording()}>
+          Stop
+        </button>
+        {transparentRecorderRef.current.downloadLink && (
+          <a href={transparentRecorderRef.current.downloadLink} download>
+            Download
+          </a>
+        )}
+
+        <button onClick={() => skeletonRecorderRef.current.startRecording()}>
+          Record skeleton
+        </button>
+        <button onClick={() => skeletonRecorderRef.current.endRecording()}>
+          Stop skeleton
+        </button>
+        {skeletonRecorderRef.current.downloadLink && (
+          <a href={skeletonRecorderRef.current.downloadLink} download>
+            Download
+          </a>
+        )}
       </div>
     </div>
   );

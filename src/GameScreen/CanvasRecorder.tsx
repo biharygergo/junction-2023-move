@@ -16,7 +16,8 @@ export class Recorder {
 
   constructor(
     private readonly onTranscodingReady: (blob: any) => void,
-    private readonly selectedLevel: Level
+    private readonly selectedLevel: Level,
+    private readonly canvasId: string
   ) {}
 
   loadFfmpeg = async () => {
@@ -58,9 +59,7 @@ export class Recorder {
     console.log("Loading ffmpeg");
     await this.loadFfmpeg();
     console.log("Loaded ffmpeg");
-    const canvas = document.getElementById(
-      "canvas-export"
-    ) as HTMLCanvasElement;
+    const canvas = document.getElementById(this.canvasId) as HTMLCanvasElement;
 
     var stream = canvas.captureStream(25);
 

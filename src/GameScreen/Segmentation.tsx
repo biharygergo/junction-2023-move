@@ -240,6 +240,43 @@ export function Segmentation(props: {
         await drawSegmentedPersonOnCanvas(people, exportContext, video);
         drawBackgroundImageBehindContent(exportContext);
       }
+
+      const transparentCameraCanvas = document.getElementById(
+        "camera-transparent"
+      ) as HTMLCanvasElement;
+
+      const transparentCameraContext = transparentCameraCanvas.getContext("2d");
+
+      if (transparentCameraContext) {
+        clearCanvas(transparentCameraContext);
+        await drawSegmentedPersonOnCanvas(
+          people,
+          transparentCameraContext,
+          video
+        );
+      }
+
+      const skeletonCanvas = document.getElementById(
+        "skeleton-canvas"
+      ) as HTMLCanvasElement;
+
+      const skeletonCanvasContext = skeletonCanvas.getContext("2d");
+
+      if (skeletonCanvasContext) {
+        clearCanvas(skeletonCanvasContext);
+        for (const pose of poses) {
+          drawSkeleton(
+            pose.keypoints,
+            skeletonCanvasContext,
+            {
+              drawBodyTarget: true,
+              drawDebugText: false,
+              drawHandTarget: true,
+            },
+            timestamp
+          );
+        }
+      }
     }
   };
 
