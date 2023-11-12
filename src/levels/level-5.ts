@@ -9,49 +9,169 @@ export const level5 = {
     recordingEnd: 30,
     targets: [
         {
-            "startTime": 0,
-            "param": 3,
-            "type": "box"
+            "type": "box",
+            "param": 2,
+            "startTime": 0
         },
         {
-            "startTime": 1,
+            "type": "box",
             "param": 4,
-            "type": "box"
+            "startTime": 1.48
         },
         {
-            "startTime": 2,
-            "param": 1,
-            "type": "box"
-        },
-        {
-            "startTime": 3,
-            "param": 2,
-            "type": "jump"
-        },
-        {
-            "startTime": 5,
-            "param": 1,
-            "type": "jump"
-        },
-        {
-            "startTime": 11,
-            "param": 0,
-            "type": "spin"
-        },
-        {
-            "startTime": 10,
-            "param": 2,
-            "type": "box"
-        },
-        {
-            "startTime": 10,
-            "param": 1,
-            "type": "box"
-        },
-        {
-            "startTime": 12,
+            "type": "jump",
             "param": 3,
-            "type": "jump"
+            "startTime": 2.92
+        },
+        {
+            "type": "box",
+            "param": 4,
+            "startTime": 5.84
+        },
+        {
+            "type": "box",
+            "param": 2,
+            "startTime": 7.32
+        },
+        {
+            "type": "jump",
+            "param": 1,
+            "startTime": 7.32
+        },
+        {
+            "type": "jump",
+            "param": 3,
+            "startTime": 8.8
+        },
+        {
+            "type": "box",
+            "param": 3,
+            "startTime": 11.72
+        },
+        {
+            "type": "box",
+            "param": 2,
+            "startTime": 13.16
+        },
+        {
+            "type": "jump",
+            "param": 1,
+            "startTime": 14.64
+        },
+        {
+            "type": "box",
+            "param": 1,
+            "startTime": 17.56
+        },
+        {
+            "type": "box",
+            "param": 2,
+            "startTime": 19.04
+        },
+        {
+            "type": "jump",
+            "param": 2,
+            "startTime": 20.48
+        },
+        {
+            "type": "box",
+            "param": 2,
+            "startTime": 23.4
+        },
+        {
+            "type": "box",
+            "param": 3,
+            "startTime": 24.88
+        },
+        {
+            "type": "jump",
+            "param": 1,
+            "startTime": 26.36
+        },
+        {
+            "type": "box",
+            "param": 2,
+            "startTime": 29.28
+        },
+        {
+            "type": "box",
+            "param": 2,
+            "startTime": 30.72
+        },
+        {
+            "type": "jump",
+            "param": 1,
+            "startTime": 32.2
+        },
+        {
+            "type": "box",
+            "param": 1,
+            "startTime": 35.12
+        },
+        {
+            "type": "box",
+            "param": 2,
+            "startTime": 36.6
+        },
+        {
+            "type": "jump",
+            "param": 1,
+            "startTime": 38.04
+        },
+        {
+            "type": "box",
+            "param": 3,
+            "startTime": 40.96
+        },
+        {
+            "type": "box",
+            "param": 2,
+            "startTime": 42.44
+        },
+        {
+            "type": "jump",
+            "param": 2,
+            "startTime": 43.92
+        },
+        {
+            "type": "jump",
+            "param": 3,
+            "startTime": 45.4
+        },
+        {
+            "type": "box",
+            "param": 1,
+            "startTime": 46.84
+        },
+        {
+            "type": "box",
+            "param": 2,
+            "startTime": 48.28
+        },
+        {
+            "type": "jump",
+            "param": 3,
+            "startTime": 49.76
+        },
+        {
+            "type": "jump",
+            "param": 3,
+            "startTime": 49.76
+        },
+        {
+            "type": "box",
+            "param": 3,
+            "startTime": 52.68
+        },
+        {
+            "type": "box",
+            "param": 2,
+            "startTime": 54.16
+        },
+        {
+            "type": "jump",
+            "param": 3,
+            "startTime": 55.6
         }
     ]
 }

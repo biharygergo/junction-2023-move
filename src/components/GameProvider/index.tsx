@@ -22,6 +22,7 @@ type GameState = {
   addMiss: () => void;
   gameStarted: boolean;
   startGame: () => void;
+  stopGame: () => void;
   updateStats: (velocity: number, acceleration: number) => void;
   selectedLevel: Level;
   setSelectedLevel: (level: Level | undefined) => void;
@@ -67,6 +68,7 @@ const GameContext = createContext<GameState>({
   addMiss: () => {},
   gameStarted: false,
   startGame: () => {},
+  stopGame: () => {},
   updateStats: (velocity: number, acceleration: number) => {},
   selectedLevel: level1,
   setSelectedLevel: () => {},
@@ -117,6 +119,11 @@ export const GameProvider: any = ({ children }: any) => {
 
   const startGame = () => {
     setGameStarted(true);
+  };
+
+  const stopGame = () => {
+    setGameStarted(false);
+    setSelectedLevel(level1)
   };
 
   // useCallback will return a memoized version of the callback that only changes if one of the dependencies has changed.
@@ -208,7 +215,8 @@ export const GameProvider: any = ({ children }: any) => {
     velocity,
     updateStats,
     selectedLevel,
-    setSelectedLevel: handleLevelSelect
+    setSelectedLevel: handleLevelSelect,
+    stopGame
   };
 
   return (

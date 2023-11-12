@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import UploadModal from "../components/UploadModal";
 import AudioPlayer from "../components/Audio/Audio";
 import LevelSelector from "./LevelSelector";
-import {levels} from "../levels";
+import { levels } from "../levels";
 import { uploadDancePost } from "../dances-service";
 import { getRandomUsername } from "./usernames";
 
@@ -42,6 +42,7 @@ function isRunningInChrome() {
 function GameScreen() {
   const {
     startGame,
+    stopGame,
     gameStarted,
     score,
     streak,
@@ -51,7 +52,7 @@ function GameScreen() {
     appState,
     updateAppState,
     updateLoadingState,
-      selectedLevel,
+    selectedLevel,
   } = useGameState();
   const recorderRef = useRef(new Recorder((blob) => transcodingReady(blob)));
   const navigate = useNavigate();
@@ -86,7 +87,7 @@ function GameScreen() {
           acceleration: statsRef.current.acceleration,
         },
       },
-      blob
+      blob,
     );
     updateAppState?.({ hasPosted: true });
     navigate("/reels");
@@ -94,19 +95,19 @@ function GameScreen() {
 
   const clickStart = () => {
     const recordingStart = selectedLevel.recordingStart;
-    const recordingEnd =  selectedLevel.recordingEnd;
-    startGame()
+    const recordingEnd = selectedLevel.recordingEnd;
+    startGame();
 
     setTimeout(() => {
-      console.log("starting record")
-      recorderRef.current.startRecording()
-    }, recordingStart * 1000)
+      console.log("starting record");
+      recorderRef.current.startRecording();
+    }, recordingStart * 1000);
 
     setTimeout(() => {
-      console.log("ending record")
-      recorderRef.current.endRecording()
-    }, recordingEnd * 1000)
-  }
+      console.log("ending record");
+      recorderRef.current.endRecording();
+    }, recordingEnd * 1000);
+  };
 
   return (
     <div className="page-wrapper">
@@ -117,7 +118,7 @@ function GameScreen() {
         >
           {isChrome ? (
             <>
-              <div style={{ textAlign: "center", marginBottom: 8 }}>
+              <div style={{ textAlign: "center", marginBottom: 8, fontSize: 18 }}>
                 Just a second...
               </div>
               <ul className="loadedItems">
@@ -139,6 +140,22 @@ function GameScreen() {
             </div>
           )}
         </div>
+        {gameStarted && (
+          <span
+            onClick={() => stopGame()}
+            style={{
+              position: "absolute",
+              zIndex: 999999,
+              bottom: 10,
+              left: 10,
+              fontSize: 16,
+              opacity: 0.4,
+              cursor: "pointer"
+            }}
+          >
+            🔄
+          </span>
+        )}
         {appState.allLoaded && !gameStarted && <LevelSelector />}
         {appState.allLoaded && !gameStarted && (
           <button onClick={clickStart} className="startButton">
@@ -161,7 +178,10 @@ function GameScreen() {
             startRecordingMovements={recorderRef.current.isRecording}
           ></Segmentation>
         )}
-        <AudioPlayer audioSrc={`${process.env.PUBLIC_URL}/audio/${selectedLevel.playingMusic}`}  shouldPlay={gameStarted}/>
+        <AudioPlayer
+          audioSrc={`${process.env.PUBLIC_URL}/audio/${selectedLevel.playingMusic}`}
+          shouldPlay={gameStarted}
+        />
         <canvas
           id="canvas"
           width={CANVAS_WIDTH}

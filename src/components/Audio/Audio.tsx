@@ -5,7 +5,11 @@ const AudioPlayer = ({ audioSrc, shouldPlay }: any) => {
 
     useEffect(() => {
         if (shouldPlay && audioRef.current) {
+            audioRef.current.currentTime = 0;
             audioRef.current.play();
+        }
+        else {
+            audioRef.current.pause();
         }
     }, [shouldPlay]);
 
