@@ -3,7 +3,7 @@ import "./Reel.css";
 import { DancePost, getPosts, likePost } from "../dances-service";
 import moment from "moment";
 import { useGameState } from "../components/GameProvider";
-import {getLevelById} from "../levels";
+import { getLevelById } from "../levels";
 
 function Reel() {
   const videoRefs = useRef({}) as any;
@@ -69,7 +69,6 @@ function Reel() {
       setHasInteracted(true);
     }
   };
-
 
   return (
     <div className="reels-wrapper" onClick={handleInteraction}>
@@ -139,7 +138,9 @@ function Reel() {
                       <span className="material-symbols-outlined meta-icon">
                         volume_up
                       </span>
-                      {post.levelId ? getLevelById(post.levelId)?.name : "Rick & Roll"}
+                      {post.levelId
+                        ? getLevelById(post.levelId)?.name
+                        : "Rick & Roll"}
                     </h5>
                     <h5 className="fitnessScore">
                       <span className="material-symbols-outlined meta-icon">
@@ -163,12 +164,14 @@ function Reel() {
               </div>
             ))}
 
-            <button
-              className="sneak-peek view-more"
-              onClick={() => setPageSize(pageSize + 20)}
-            >
-              View more
-            </button>
+            {pageSize < posts.length && (
+              <button
+                className="sneak-peek view-more"
+                onClick={() => setPageSize(pageSize + 20)}
+              >
+                View more
+              </button>
+            )}
           </>
         )}
       </div>

@@ -233,7 +233,7 @@ function GameScreen() {
 
         {recorderRef.current.isTranscoding && <UploadModal />}
       </div>
-      <div className="controls">
+      {/* <div className="controls">
         <button onClick={() => transparentRecorderRef.current.startRecording()}>
           Record transparent
         </button>
@@ -257,7 +257,7 @@ function GameScreen() {
             Download
           </a>
         )}
-      </div>
+      </div> */}
     </div>
   );
 }

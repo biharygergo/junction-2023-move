@@ -254,6 +254,7 @@ export function Segmentation(props: {
           transparentCameraContext,
           video
         );
+        drawBackgroundColorBehindContent(transparentCameraContext);
       }
 
       const skeletonCanvas = document.getElementById(
@@ -276,6 +277,7 @@ export function Segmentation(props: {
             timestamp
           );
         }
+        drawBackgroundColorBehindContent(skeletonCanvasContext);
       }
     }
   };
@@ -283,6 +285,13 @@ export function Segmentation(props: {
   const drawBackgroundImageBehindContent = (ctx: CanvasRenderingContext2D) => {
     ctx.globalCompositeOperation = "destination-over";
     ctx.drawImage(backgroundImageRef.current, 0, 0);
+    ctx.globalCompositeOperation = "source-over";
+  };
+
+  const drawBackgroundColorBehindContent = (ctx: CanvasRenderingContext2D) => {
+    ctx.globalCompositeOperation = "destination-over";
+    ctx.fillStyle = "green";
+    ctx.fillRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     ctx.globalCompositeOperation = "source-over";
   };
 

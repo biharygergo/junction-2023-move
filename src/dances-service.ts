@@ -10,9 +10,11 @@ import {
   orderBy,
   updateDoc,
   increment,
+  where,
   onSnapshot,
 } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import moment from "moment";
 
 const COLLECTION = "dances";
 const firebaseConfig = {
@@ -74,7 +76,15 @@ export async function uploadDancePost(post: DancePostDto, videoBlob: any) {
 }
 
 export function getPosts(setPosts: (posts: DancePost[]) => void) {
-  const q = query(collection(db, COLLECTION), orderBy("createdAt", "desc"));
+  // const whereFilter = moment(Date.now()).subtract(1.7, 'hours').toDate();
+
+  const whereFilter = new Date('2023-11-12T04:13:01.470Z');
+
+  const q = query(
+    collection(db, COLLECTION),
+    where("createdAt", ">", whereFilter),
+    orderBy("createdAt", "desc")
+  );
   const unsubscribe = onSnapshot(q, (querySnapshot) => {
     setPosts(querySnapshot.docs.map((doc) => doc.data() as DancePost));
   });
