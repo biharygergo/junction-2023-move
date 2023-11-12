@@ -163,7 +163,7 @@
 
 .back-to-link {
   position: absolute;
-  bottom: 10px;
+  top: 10px;
   left: 10px;
   color: white;
   display: flex;
