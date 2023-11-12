@@ -145,11 +145,11 @@ function Reel() {
                       <span className="material-symbols-outlined meta-icon">
                         ecg_heart
                       </span>
-                      {post.fitnessStats.acceleration > 50
+                      {post.fitnessStats.acceleration > 300
                         ? "Dynamic"
                         : "Relaxed"}{" "}
                       movements,{" "}
-                      {post.fitnessStats.velocity > 50 ? "long" : "short"}{" "}
+                      {post.fitnessStats.velocity > 200 ? "long" : "short"}{" "}
                       distance traveled
                     </h5>
                     <h5 className="fitnessScore">

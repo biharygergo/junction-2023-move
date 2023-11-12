@@ -34,6 +34,7 @@ export type DancePost = {
   id: string;
   createdAt: Timestamp;
   userId: string;
+  levelId: string;
   videoPublicUrl: string;
   fitnessStats: {
     score: number;

@@ -61,6 +61,7 @@ function GameScreen() {
   const isChrome = useMemo(() => isRunningInChrome(), []);
 
   const scoreRef = useRef(0);
+  const currentLevelIdRef = useRef("");
   const statsRef = useRef({ velocity: 0, acceleration: 0 });
 
   const loadedItems = Object.entries(appState.loadingChecklist);
@@ -70,6 +71,7 @@ function GameScreen() {
       (blob) => transcodingReady(blob),
       selectedLevel
     );
+    currentLevelIdRef.current = selectedLevel.id;
   }, [selectedLevel]);
 
   useEffect(() => {
@@ -90,14 +92,14 @@ function GameScreen() {
     await uploadDancePost(
       {
         userId: getRandomUsername(),
-        levelId: selectedLevel.id,
+        levelId: currentLevelIdRef.current,
         fitnessStats: {
           score: scoreRef.current,
           velocity: statsRef.current.velocity,
           acceleration: statsRef.current.acceleration,
         },
       },
-      blob,
+      blob
     );
     updateAppState?.({ hasPosted: true });
     navigate("/reels");
@@ -128,7 +130,9 @@ function GameScreen() {
         >
           {isChrome ? (
             <>
-              <div style={{ textAlign: "center", marginBottom: 8, fontSize: 18 }}>
+              <div
+                style={{ textAlign: "center", marginBottom: 8, fontSize: 18 }}
+              >
                 Just a second...
               </div>
               <ul className="loadedItems">
@@ -160,7 +164,7 @@ function GameScreen() {
               left: 10,
               fontSize: 16,
               opacity: 0.4,
-              cursor: "pointer"
+              cursor: "pointer",
             }}
           >
             🔄
