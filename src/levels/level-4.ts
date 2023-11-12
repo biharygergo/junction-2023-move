@@ -8,7 +8,7 @@ export const level4 = {
     uploadMusic: "gimme.mp3",
     recordingStart: 5,
     recordingEnd: 45,
-    targets: [
+    targets:[
         {
             "startTime": 0,
             "type": "jump",
@@ -51,111 +51,116 @@ export const level4 = {
         },
         {
             "startTime": 14.35,
+            "type": "jump",
+            "param": 3
+        },
+        {
+            "startTime": 14.35,
             "type": "box",
             "param": 4
         },
         {
-            "startTime": 16.32,
+            "startTime": 15.35,
             "type": "box",
             "param": 4
         },
         {
-            "startTime": 18.29,
+            "startTime": 16.35,
             "type": "box",
             "param": 2
         },
         {
-            "startTime": 20.26,
+            "startTime": 17.35,
             "type": "spin",
             "param": 3
         },
         {
-            "startTime": 22.23,
+            "startTime": 19.32,
             "type": "box",
             "param": 4
         },
         {
-            "startTime": 24.2,
+            "startTime": 21.29,
             "type": "box",
             "param": 2
         },
         {
-            "startTime": 26.17,
+            "startTime": 23.26,
             "type": "jump",
             "param": 1
         },
         {
-            "startTime": 28.14,
+            "startTime": 25.23,
             "type": "jump",
             "param": 1
         },
         {
-            "startTime": 28.14,
+            "startTime": 25.23,
             "type": "box",
             "param": 3
         },
         {
-            "startTime": 28.14,
+            "startTime": 25.23,
             "type": "box",
             "param": 4
         },
         {
-            "startTime": 30.11,
+            "startTime": 27.2,
             "type": "jump",
             "param": 1
         },
         {
-            "startTime": 32.08,
+            "startTime": 29.17,
             "type": "spin",
             "param": 2
         },
         {
-            "startTime": 34.05,
+            "startTime": 31.14,
             "type": "jump",
             "param": 2
         },
         {
-            "startTime": 36.02,
+            "startTime": 33.11,
             "type": "spin",
             "param": 4
         },
         {
-            "startTime": 37.99,
+            "startTime": 35.08,
             "type": "jump",
             "param": 2
         },
         {
-            "startTime": 39.96,
+            "startTime": 37.05,
             "type": "box",
             "param": 3
         },
         {
-            "startTime": 41.93,
+            "startTime": 38.05,
             "type": "box",
             "param": 1
         },
         {
-            "startTime": 43.9,
+            "startTime": 39.05,
             "type": "box",
             "param": 2
         },
         {
-            "startTime": 45.87,
+            "startTime": 40.05,
             "type": "box",
             "param": 4
         },
         {
-            "startTime": 47.84,
+            "startTime": 42.02,
             "type": "jump",
             "param": 3
         },
         {
-            "startTime": 49.81,
+            "startTime": 43.99,
             "type": "box",
             "param": 1
         },
         {
-            "startTime": 50.81,
+            "startTime": 44.99,
             "type": "box",
             "param": 1
         }

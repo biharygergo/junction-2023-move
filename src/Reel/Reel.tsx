@@ -3,6 +3,7 @@ import "./Reel.css";
 import { DancePost, getPosts, likePost } from "../dances-service";
 import moment from "moment";
 import { useGameState } from "../components/GameProvider";
+import {getLevelById} from "../levels";
 
 function Reel() {
   const videoRefs = useRef({}) as any;
@@ -69,6 +70,7 @@ function Reel() {
     }
   };
 
+
   return (
     <div className="reels-wrapper" onClick={handleInteraction}>
       <div className="reels-content-wrapper">
@@ -125,7 +127,7 @@ function Reel() {
                           favorite
                         </span>
                       </button>
-                      <span>{post.likes ?? 0}</span>
+                      <span>{post.likes ?? 1} liked these moves</span>
                     </div>
                     <h5 className="fitnessScore">
                       <span className="material-symbols-outlined meta-icon">
@@ -137,7 +139,7 @@ function Reel() {
                       <span className="material-symbols-outlined meta-icon">
                         volume_up
                       </span>
-                      Rick & Roll
+                      {post.levelId ? getLevelById(post.levelId)?.name : "Rick & Roll"}
                     </h5>
                     <h5 className="fitnessScore">
                       <span className="material-symbols-outlined meta-icon">

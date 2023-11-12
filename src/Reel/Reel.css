@@ -42,6 +42,8 @@
 
 .section-content video {
   border-radius: 20px;
+  border: 1px solid magenta;
+  box-shadow: 0 0 10px magenta;
 
   @media screen and (max-width: 800px) {
     width: 100%;
@@ -60,6 +62,8 @@
     width: unset;
   }
 }
+
+
 
 .play-button {
   position: absolute;
@@ -81,10 +85,8 @@
 
 .meta {
   color: white;
-  border: 1px solid magenta;
-  box-shadow: 0 0 10px magenta;
   border-radius: 20px;
-  padding: 1rem 2rem;
+  padding: 1rem 1rem;
   height: fit-content;
 }
 
@@ -96,14 +98,19 @@
 
 .fitnessScore {
   margin-top: 0;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.6rem;
   display: flex;
   align-items: center;
+  font-size: 16px;
 }
 
 .meta-icon {
-  font-size: inherit;
+  font-size: 20px;
   margin-right: 0.4rem;
+}
+.like-button .meta-icon {
+  font-size: 24px;
+  margin-right: 0.2rem;
 }
 
 .likes-container {

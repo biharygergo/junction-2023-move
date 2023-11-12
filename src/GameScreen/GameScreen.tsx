@@ -90,6 +90,7 @@ function GameScreen() {
     await uploadDancePost(
       {
         userId: getRandomUsername(),
+        levelId: selectedLevel.id,
         fitnessStats: {
           score: scoreRef.current,
           velocity: statsRef.current.velocity,

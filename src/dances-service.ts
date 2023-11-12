@@ -41,6 +41,7 @@ export type DancePost = {
     acceleration: number;
   };
   likes?: number;
+  levelId?: string;
 };
 
 export type DancePostDto = Omit<
@@ -67,7 +68,7 @@ export async function uploadDancePost(post: DancePostDto, videoBlob: any) {
     id: docRef.id,
     videoPublicUrl: publicUrl,
     createdAt: Timestamp.now(),
-    likes: 0,
+    likes: 1,
     ...post,
   });
 }
