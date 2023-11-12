@@ -86,10 +86,16 @@ export function Segmentation(props: {
   const poseDetectorRef = useRef<any>();
   const backgroundImageRef = useRef<any>();
   const animationRef = useRef<any>();
-  const { updateLoadingState, updateStats } = useGameState();
+  const { updateLoadingState, updateStats, selectedLevel } = useGameState();
 
   const recordedMovementsRef = useRef<any>([]);
   const startRecordingInternal = useRef<boolean>(false);
+
+  const levelInternal = useRef<any>();
+
+  useEffect(() => {
+    levelInternal.current = selectedLevel;
+  }, [selectedLevel]);
 
   useEffect(() => {
     startRecordingInternal.current = !!props.startRecordingMovements;
@@ -172,7 +178,7 @@ export function Segmentation(props: {
 
                 animationLoop(0);
               };
-              backgroundImageRef.current.src = `${process.env.PUBLIC_URL}/img/background_test.png`;
+              backgroundImageRef.current.src = `${process.env.PUBLIC_URL}/img/${levelInternal.current.background}`;
             });
         });
       });

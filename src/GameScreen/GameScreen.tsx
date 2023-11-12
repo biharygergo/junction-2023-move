@@ -54,7 +54,9 @@ function GameScreen() {
     updateLoadingState,
     selectedLevel,
   } = useGameState();
-  const recorderRef = useRef(new Recorder((blob) => transcodingReady(blob)));
+  const recorderRef = useRef(
+    new Recorder((blob) => transcodingReady(blob), selectedLevel)
+  );
   const navigate = useNavigate();
   const isChrome = useMemo(() => isRunningInChrome(), []);
 
@@ -62,6 +64,13 @@ function GameScreen() {
   const statsRef = useRef({ velocity: 0, acceleration: 0 });
 
   const loadedItems = Object.entries(appState.loadingChecklist);
+
+  useEffect(() => {
+    recorderRef.current = new Recorder(
+      (blob) => transcodingReady(blob),
+      selectedLevel
+    );
+  }, [selectedLevel]);
 
   useEffect(() => {
     recorderRef.current.loadFfmpeg().then(() => {

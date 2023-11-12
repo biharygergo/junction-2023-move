@@ -3,6 +3,7 @@ import { toBlobURL, fetchFile } from "@ffmpeg/util";
 import { useRef, useState } from "react";
 import "./CanvasRecorder.css";
 import { uploadDancePost } from "../dances-service";
+import { Level } from "../levels";
 const ffmpeg = new FFmpeg();
 
 export class Recorder {
@@ -13,7 +14,10 @@ export class Recorder {
   isRecording: boolean = false;
   isTranscoding: boolean = false;
 
-  constructor(private readonly onTranscodingReady: (blob: any) => void) {}
+  constructor(
+    private readonly onTranscodingReady: (blob: any) => void,
+    private readonly selectedLevel: Level
+  ) {}
 
   loadFfmpeg = async () => {
     if (!this.loaded) {
@@ -93,11 +97,13 @@ export class Recorder {
   transcode = async (webcamData: any) => {
     const name = "record.webm";
     console.log("Transcoding...");
-    const music = await fetchFile(`${process.env.PUBLIC_URL}/music/rickroll.mp3`);
-    await ffmpeg.writeFile('music.mp3', music);
+    const music = await fetchFile(
+      `${process.env.PUBLIC_URL}/audio/${this.selectedLevel.uploadMusic}`
+    );
+    await ffmpeg.writeFile("music.mp3", music);
     await ffmpeg.writeFile(name, webcamData);
     const command = `-i ${name} -filter:v fps=25 -c:v libx264 -preset ultrafast -crf 22 -c:a copy output-no-music.mp4`;
-    const commandWithMusic = `-i output-no-music.mp4 -i music.mp3 -map 0:v -map 1:a -c:v copy -shortest output.mp4`
+    const commandWithMusic = `-i output-no-music.mp4 -i music.mp3 -map 0:v -map 1:a -c:v copy -shortest output.mp4`;
     await ffmpeg.exec(command.split(" "));
     await ffmpeg.exec(commandWithMusic.split(" "));
     console.log("Transcoding complete...");

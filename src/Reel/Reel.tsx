@@ -38,11 +38,7 @@ function Reel() {
 
     const handleIntersection = (entries: any[]) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          console.log("intersect", entry.target.getAttribute("data-id"));
-        }
         if (entry.isIntersecting && hasInteracted) {
-          entry.target.play();
           startPlayingVideo(entry.target.getAttribute("data-id"));
         } else {
           entry.target.pause();
@@ -63,6 +59,7 @@ function Reel() {
 
   const startPlayingVideo = (id: string) => {
     setPlayingVideo(id);
+    videoRefs.current[id].load();
     videoRefs.current[id].play();
   };
 
@@ -112,6 +109,7 @@ function Reel() {
                     src={post.videoPublicUrl}
                     data-id={post.id}
                     loop
+                    preload="none"
                   ></video>
                 </div>
                 <div className="meta">
