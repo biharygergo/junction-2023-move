@@ -27,6 +27,7 @@ type GameState = {
 type AppState = {
   loadingChecklist: Checklist;
   allLoaded: boolean;
+  hasPosted: boolean;
 };
 
 type Checklist = {
@@ -52,6 +53,7 @@ const GameContext = createContext<GameState>({
   appState: {
     loadingChecklist: DEFAULT_CHECKLIST,
     allLoaded: false,
+    hasPosted: false,
   },
   updateLoadingState: () => {},
   streak: 1,
@@ -84,6 +86,7 @@ export const GameProvider: any = ({ children }: any) => {
   const [appState, setAppState] = useState<AppState>({
     loadingChecklist: DEFAULT_CHECKLIST,
     allLoaded: false,
+    hasPosted: false,
   });
 
   const handleLevelSelect = (level: Level | undefined) => {
@@ -152,7 +155,7 @@ export const GameProvider: any = ({ children }: any) => {
   }, []);
 
   const updateAppState = useCallback((state: Partial<AppState>) => {
-    setAppState((oldState) => ({ ...oldState, state }));
+    setAppState((oldState) => ({ ...oldState, ...state }));
   }, []);
 
   const updateLoadingState = useCallback(
@@ -166,12 +169,12 @@ export const GameProvider: any = ({ children }: any) => {
           ...oldState,
           loadingChecklist: newLoadedChecklist,
           allLoaded: Object.values(newLoadedChecklist).every(
-            (loaded) => !!loaded,
+            (loaded) => !!loaded
           ),
         };
       });
     },
-    [],
+    []
   );
 
   // Include the updateBodyPosition function in the context value
@@ -188,7 +191,7 @@ export const GameProvider: any = ({ children }: any) => {
     gameStarted,
     startGame,
     selectedLevel,
-    setSelectedLevel: handleLevelSelect,
+    setSelectedLevel: handleLevelSelect
   };
 
   return (

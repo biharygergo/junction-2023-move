@@ -5,185 +5,6 @@ import "./CanvasRecorder.css";
 import { uploadDancePost } from "../dances-service";
 const ffmpeg = new FFmpeg();
 
-const usernames = [
-  "SnappyCarrot9😋",
-  "SneezyIguana31🙈",
-  "SnappyApple89😱",
-  "ZippyFlamingo99🐵",
-  "JumpyElephant87😄",
-  "CheeryGiraffe47🙈",
-  "BreezyHippo28😋",
-  "SneezyHippo78😎",
-  "ZippyCarrot77😱",
-  "BreezyElephant53😎",
-  "SneezyElephant74😎",
-  "BreezyJaguar25😆",
-  "ZippyApple83😋",
-  "HappyFlamingo16😉",
-  "BreezyJaguar51😉",
-  "SnappyJaguar73🙈",
-  "ChirpyElephant51😎",
-  "ChirpyGiraffe30😄",
-  "BouncyApple30😄",
-  "SnappyIguana19🐵",
-  "ZippyBanana71😉",
-  "SillyHippo42😱",
-  "CheeryHippo94😄",
-  "SneezyBanana19😊",
-  "SnappyElephant69😆",
-  "JumpyIguana57😊",
-  "HappyGiraffe97😉",
-  "HappyGiraffe38😆",
-  "SillyApple39😉",
-  "HappyApple82🐵",
-  "HappyBanana43😆",
-  "SneezyHippo84😆",
-  "SnappyDaisy2🙈",
-  "SnappyGiraffe62😆",
-  "SneezyFlamingo2😋",
-  "SnappyHippo1😱",
-  "SillyGiraffe93😋",
-  "ChirpyDaisy32😆",
-  "BouncyFlamingo32😆",
-  "SneezyFlamingo33😄",
-  "ZippyCarrot56😱",
-  "BouncyDaisy86😄",
-  "CheeryCarrot15😆",
-  "SillyFlamingo24😆",
-  "SnappyFlamingo19😱",
-  "SillyBanana71😂",
-  "HappyJaguar60😆",
-  "ZippyFlamingo10😋",
-  "ZippyElephant17😆",
-  "BreezyJaguar85😉",
-  "GiggleSprout🌱",
-  "SillyBroccoli🥦",
-  "JumpingBeans🐝",
-  "HappyPeas😄",
-  "RunningCarrot🥕",
-  "BouncingBerry🍇",
-  "CrazyKale🌿",
-  "SmartySpinach🌟",
-  "LaughingLemon🍋",
-  "WigglyWatermelon🍉",
-  "ZippyZucchini🥒",
-  "DizzyDragonfruit🐉",
-  "ChuckleCherry🍒",
-  "PuddleJump🌊",
-  "SneezyCelery😂",
-  "RocketRadish🚀",
-  "TwirlTomato🍅",
-  "JollyJuiceBox🥤",
-  "HulaHoopingHoneydew🍈",
-  "SprintSprinkle🏃",
-  "TwinkleTurnip✨",
-  "PiratePeach🍑",
-  "NinjaNectarine🥋",
-  "HoppingHummus🦘",
-  "GleefulGrape🍇",
-  "FunnyFig🦩",
-  "ElasticEggplant🍆",
-  "DoodleDate🖍️",
-  "CurlyKiwi🌀",
-  "BreezyBanana🍌",
-  "AquaApple🌊",
-  "MunchkinMango🥭",
-  "FizzyBerry🍓",
-  "PeppyPineapple🍍",
-  "QuestQuince🗺️",
-  "RacerRaspberry🏎️",
-  "SkaterStrawberry🛹",
-  "TreasureTomato🏴‍☠️",
-  "VikingVanilla🍦",
-  "WackyWatercress🤪",
-  "XtraXtraOats✖️",
-  "YoYoYogurt🪀",
-  "ZoomZest🔍",
-  "AlphaAvocado🥑",
-  "BoomerBlueberry💥",
-  "CosmicCantaloupe🌌",
-  "DaringDurian🤺",
-  "EchoEdamame📢",
-  "FluffyFalafel🐑",
-  "GliderGuava🪂",
-  "HeroHoney🦸",
-  "InfiniteIvy🌿",
-  "JazzyJicama🎷",
-  "KiteKiwi🪁",
-  "LunarLime🌙",
-  "MerryMelon🎉",
-  "NeonNoodle💡",
-  "OasisOlive🏝️",
-  "PoppingPapaya🎈",
-  "QuirkyQuinoa🤓",
-  "RumbleRaisin🔊",
-  "SolarSpinach🌞",
-  "TangoTangerine🕺",
-  "UltraUmbrella☂️",
-  "VortexVeggie🌀",
-  "WhirlwindWheat🌪️",
-  "XcitingXacuti🎆",
-  "YummyYucca🍽️",
-  "ZanyZiti🎭",
-  "AcrobatApple🤸",
-  "BuffBanana💪",
-  "ChampChard🏆",
-  "DiveDill🌊",
-  "ElectricElderberry⚡",
-  "FancyFig🎩",
-  "GolfGrape🏌️",
-  "High5Hummus✋",
-  "IglooIceberg🧊",
-  "JokeJalapeno😜",
-  "KazooKohlrabi🎺",
-  "LiftLentil🏋️",
-  "MazeMushroom🌀",
-  "NiftyNutmeg🦊",
-  "OomphOrange💨",
-  "PuzzlePepper🧩",
-  "QuizQuince🤔",
-  "RapRutabaga🎤",
-  "ShineSwissChard💫",
-  "TrickTofu🎩",
-  "UniteUgliFruit🤝",
-  "VividVeggie🌈",
-  "WarpWalnut🌪",
-  "XylitolXimenia🦷",
-  "YodelYam🏔️",
-  "ZigzagZest🧬",
-  "AsteroidArtichoke🚀",
-  "BoingBeetroot🐸",
-  "CuddleCucumber🤗",
-  "DazzleDaikon✨",
-  "EnigmaEgg🥚",
-  "FrostyFennel❄️",
-  "GalaGarlic🎊",
-  "HopscotchHerb🤸",
-  "InfinityIcing🍥",
-  "JuggleJuice🤹",
-  "KryptonKale🦸",
-  "LoopLettuce🔄",
-  "MarsMint🪐",
-  "NovaNectar🌟",
-  "OrbitOatmeal🛰️",
-  "PuffPeas💨",
-  "QuackQuince🦆",
-  "RippleRadish🌊",
-  "SwirlSquash🌀",
-  "TwistTomatillo🌪",
-  "UproarUdon🎊",
-  "VroomVanilla🏎️",
-  "WhizWalnut🌟",
-  "XpressXigua🚂",
-  "Yo-yoYarrow🪀",
-  "ZapZucchini⚡"
-];
-
-function getRandomUsername() {
-  const randomIndex = Math.floor(Math.random() * usernames.length);
-  return usernames[randomIndex];
-}
-
 export class Recorder {
   recorderRef?: MediaRecorder;
   downloadLink?: string;
@@ -191,6 +12,8 @@ export class Recorder {
   loaded: boolean = false;
   isRecording: boolean = false;
   isTranscoding: boolean = false;
+
+  constructor(private readonly onTranscodingReady: (blob: any) => void) {}
 
   loadFfmpeg = async () => {
     if (!this.loaded) {
@@ -223,10 +46,7 @@ export class Recorder {
     const blob = await this.transcode(
       new Uint8Array(await props.blob.arrayBuffer())
     );
-    await uploadDancePost(
-      { userId: getRandomUsername(), fitnessStats: { score: 10 } },
-      blob
-    );
+    this.onTranscodingReady(blob);
     this.isTranscoding = false;
   };
 
@@ -276,7 +96,7 @@ export class Recorder {
     const music = await fetchFile(`${process.env.PUBLIC_URL}/music/rickroll.mp3`);
     await ffmpeg.writeFile('music.mp3', music);
     await ffmpeg.writeFile(name, webcamData);
-    const command = `-i ${name} -filter:v fps=25 output-no-music.mp4`;
+    const command = `-i ${name} -filter:v fps=25 -c:v libx264 -preset ultrafast -crf 22 -c:a copy output-no-music.mp4`;
     const commandWithMusic = `-i output-no-music.mp4 -i music.mp3 -map 0:v -map 1:a -c:v copy -shortest output.mp4`
     await ffmpeg.exec(command.split(" "));
     await ffmpeg.exec(commandWithMusic.split(" "));
