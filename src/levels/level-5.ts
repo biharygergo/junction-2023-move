@@ -3,6 +3,7 @@ export const level5 = {
     id: "level-5",
     name: "Level 5",
     background: "bg-5.png",
+    exportedBackground: "bg-5-sm.png",
     playingMusic: "rockyou.mp3",
     uploadMusic: "never.mp3",
     recordingStart: 5,

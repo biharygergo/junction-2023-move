@@ -2,6 +2,7 @@ export const level2 = {
   id: "level-2",
   name: "Level 2",
   background: "bg-2.png",
+    exportedBackground: "bg-2-sm.png",
   playingMusic: "passion.mp3",
   uploadMusic: "never.mp3",
   recordingStart: 5,

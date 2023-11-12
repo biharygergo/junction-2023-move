@@ -14,6 +14,7 @@ export interface Level {
   id: string;
   name: string;
   background: string;
+  exportedBackground: string;
   playingMusic: string;
   uploadMusic: string;
   recordingStart: number;
