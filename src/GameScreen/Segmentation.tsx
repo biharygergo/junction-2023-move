@@ -33,14 +33,87 @@ export type DetectionTarget = {
     | undefined;
 };
 
+function calculateVelocityAndAcceleration(
+  data: { timestamp: number; x: number; y: number }[]
+) {
+  const velocity = [];
+  const acceleration = [];
+
+  for (let i = 1; i < data.length; i++) {
+    const dt = data[i].timestamp - data[i - 1].timestamp;
+
+    const dx = data[i].x - data[i - 1].x;
+    const dy = data[i].y - data[i - 1].y;
+
+    // Velocity: Change in position over change in time
+    const vx = dx / dt;
+    const vy = dy / dt;
+
+    // Magnitude of velocity vector
+    const vMagnitude = Math.sqrt(vx ** 2 + vy ** 2);
+
+    velocity.push({ timestamp: data[i].timestamp, magnitude: vMagnitude });
+
+    // Acceleration: Change in velocity over change in time
+    if (i > 1) {
+      const dvx =
+        vx -
+        (data[i - 1].x - data[i - 2].x) /
+          (data[i - 1].timestamp - data[i - 2].timestamp);
+      const dvy =
+        vy -
+        (data[i - 1].y - data[i - 2].y) /
+          (data[i - 1].timestamp - data[i - 2].timestamp);
+
+      // Magnitude of acceleration vector
+      const aMagnitude = Math.sqrt(dvx ** 2 + dvy ** 2);
+
+      acceleration.push({
+        timestamp: data[i].timestamp,
+        magnitude: aMagnitude,
+      });
+    }
+  }
+
+  return { velocity, acceleration };
+}
+
 export function Segmentation(props: {
   onTargetMove?: (target: DetectionTarget) => void;
+  startRecordingMovements?: boolean;
 }) {
   const segmenterRef = useRef<any>();
   const poseDetectorRef = useRef<any>();
   const backgroundImageRef = useRef<any>();
   const animationRef = useRef<any>();
-  const { updateLoadingState } = useGameState();
+  const { updateLoadingState, updateStats } = useGameState();
+
+  const recordedMovementsRef = useRef<any>([]);
+  const startRecordingInternal = useRef<boolean>(false);
+
+  useEffect(() => {
+    startRecordingInternal.current = !!props.startRecordingMovements;
+    if (props.startRecordingMovements) {
+      console.log("starting recording");
+    } else if (props.startRecordingMovements === false) {
+      console.log("stopping recording");
+      const calculated = calculateVelocityAndAcceleration(
+        recordedMovementsRef.current
+      );
+      const velocity = Math.round(
+        calculated.velocity
+          .map((item) => item.magnitude)
+          .reduce((acc, curr) => acc + curr, 0)
+      );
+      const acceleration = Math.round(
+        calculated.acceleration
+          .map((item) => item.magnitude)
+          .reduce((acc, curr) => acc + curr, 0)
+      );
+
+      updateStats(velocity, acceleration);
+    }
+  }, [props.startRecordingMovements]);
 
   useEffect(() => {
     const constraints = {
@@ -64,7 +137,7 @@ export function Segmentation(props: {
           .getSettings().height;
 
         if (actualWidth > actualHeight) {
-          console.log('Flipping camera on mobile');
+          console.log("Flipping camera on mobile");
           await track.applyConstraints(constraints);
         }
 
@@ -97,7 +170,7 @@ export function Segmentation(props: {
               backgroundImageRef.current.onload = function () {
                 updateLoadingState({ tensorflow: true });
 
-                animationLoop();
+                animationLoop(0);
               };
               backgroundImageRef.current.src = `${process.env.PUBLIC_URL}/img/background_test.png`;
             });
@@ -109,12 +182,12 @@ export function Segmentation(props: {
     };
   }, []);
 
-  const animationLoop = () => {
-    renderSegmentation();
+  const animationLoop = (timestamp: number) => {
+    renderSegmentation(timestamp);
     animationRef.current = requestAnimationFrame(animationLoop);
   };
 
-  const renderSegmentation = async () => {
+  const renderSegmentation = async (timestamp: number) => {
     const segmenter = segmenterRef.current as bodySegmentation.BodySegmenter;
     const video = document.getElementById("video") as HTMLVideoElement;
     const people = await segmenter.segmentPeople(video as HTMLVideoElement);
@@ -137,11 +210,16 @@ export function Segmentation(props: {
       await drawSegmentedPersonOnCanvas(people, ctx, video);
       drawRenderFrame(ctx);
       for (const pose of poses) {
-        drawSkeleton(pose.keypoints, ctx, {
-          drawBodyTarget: true,
-          drawDebugText: false,
-          drawHandTarget: true,
-        });
+        drawSkeleton(
+          pose.keypoints,
+          ctx,
+          {
+            drawBodyTarget: true,
+            drawDebugText: false,
+            drawHandTarget: true,
+          },
+          timestamp
+        );
       }
 
       if (exportContext) {
@@ -189,7 +267,8 @@ export function Segmentation(props: {
       drawHandTarget?: boolean;
       drawBodyTarget?: boolean;
       drawDebugText?: boolean;
-    }
+    },
+    timestamp: number
   ) => {
     const color = "White";
 
@@ -264,6 +343,14 @@ export function Segmentation(props: {
           name: "body",
           position: convertToRelativePoint(centerPoint.x, centerPoint.y),
         });
+
+        if (startRecordingInternal.current) {
+          recordedMovementsRef.current.push({
+            timestamp,
+            x: centerPoint.x,
+            y: centerPoint.y,
+          });
+        }
       } else {
         props.onTargetMove?.({
           name: "body",

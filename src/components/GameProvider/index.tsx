@@ -16,10 +16,13 @@ type GameState = {
   updateLoadingState: (updatedState: Partial<Checklist>) => void;
   score: number;
   streak: number;
+  acceleration: number;
+  velocity: number;
   addHit: () => void;
   addMiss: () => void;
   gameStarted: boolean;
   startGame: () => void;
+  updateStats: (velocity: number, acceleration: number) => void;
   selectedLevel: Level;
   setSelectedLevel: (level: Level | undefined) => void;
 };
@@ -58,10 +61,13 @@ const GameContext = createContext<GameState>({
   updateLoadingState: () => {},
   streak: 1,
   score: 0,
+  acceleration: 0,
+  velocity: 0,
   addHit: () => {},
   addMiss: () => {},
   gameStarted: false,
   startGame: () => {},
+  updateStats: (velocity: number, acceleration: number) => {},
   selectedLevel: level1,
   setSelectedLevel: () => {},
 });
@@ -88,6 +94,9 @@ export const GameProvider: any = ({ children }: any) => {
     allLoaded: false,
     hasPosted: false,
   });
+
+  const [velocity, setVelocity] = useState<number>(0);
+  const [acceleration, setAcceleration] = useState<number>(0);
 
   const handleLevelSelect = (level: Level | undefined) => {
     if (level) {
@@ -177,6 +186,11 @@ export const GameProvider: any = ({ children }: any) => {
     []
   );
 
+  const updateStats = useCallback((velocity: number, acceleration: number) => {
+    setVelocity(velocity);
+    setAcceleration(acceleration);
+  }, []);
+
   // Include the updateBodyPosition function in the context value
   const contextValue: GameState = {
     bodyPositions,
@@ -190,6 +204,9 @@ export const GameProvider: any = ({ children }: any) => {
     streak,
     gameStarted,
     startGame,
+    acceleration,
+    velocity,
+    updateStats,
     selectedLevel,
     setSelectedLevel: handleLevelSelect
   };

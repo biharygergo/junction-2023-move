@@ -84,7 +84,10 @@ function Reel() {
               moves. 🕺
             </p>
 
-            <button className="sneak-peek" onClick={() => updateAppState?.({ hasPosted: true })}>
+            <button
+              className="sneak-peek"
+              onClick={() => updateAppState?.({ hasPosted: true })}
+            >
               Sneak peek
             </button>
           </div>
@@ -142,7 +145,12 @@ function Reel() {
                     <span className="material-symbols-outlined meta-icon">
                       ecg_heart
                     </span>
-                    110 BPM
+                    {post.fitnessStats.acceleration > 50
+                      ? "Dynamic"
+                      : "Relaxed"}{" "}
+                    movements,{" "}
+                    {post.fitnessStats.velocity > 50 ? "long" : "short"}{" "}
+                    distance traveled
                   </h5>
                   <h5 className="fitnessScore">
                     <span className="material-symbols-outlined meta-icon">

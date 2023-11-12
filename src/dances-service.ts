@@ -37,6 +37,8 @@ export type DancePost = {
   videoPublicUrl: string;
   fitnessStats: {
     score: number;
+    velocity: number;
+    acceleration: number;
   };
   likes?: number;
 };

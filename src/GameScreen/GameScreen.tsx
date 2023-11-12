@@ -45,8 +45,11 @@ function GameScreen() {
     gameStarted,
     score,
     streak,
+    velocity,
+    acceleration,
     updateBodyPosition,
     appState,
+    updateAppState,
     updateLoadingState,
       selectedLevel,
   } = useGameState();
@@ -55,6 +58,7 @@ function GameScreen() {
   const isChrome = useMemo(() => isRunningInChrome(), []);
 
   const scoreRef = useRef(0);
+  const statsRef = useRef({ velocity: 0, acceleration: 0 });
 
   const loadedItems = Object.entries(appState.loadingChecklist);
 
@@ -65,23 +69,27 @@ function GameScreen() {
   }, []);
 
   useEffect(() => {
-    if (recorderRef.current.downloadLink !== undefined) {
-      navigate("/reels");
-    }
-  }, [recorderRef.current.downloadLink]);
-
-  useEffect(() => {
     scoreRef.current = score;
   }, [score]);
+
+  useEffect(() => {
+    statsRef.current = { velocity, acceleration };
+  }, [velocity, acceleration]);
 
   const transcodingReady = async (blob: any) => {
     await uploadDancePost(
       {
         userId: getRandomUsername(),
-        fitnessStats: { score: scoreRef.current },
+        fitnessStats: {
+          score: scoreRef.current,
+          velocity: statsRef.current.velocity,
+          acceleration: statsRef.current.acceleration,
+        },
       },
       blob
     );
+    updateAppState?.({ hasPosted: true });
+    navigate("/reels");
   };
 
   const clickStart = () => {
@@ -148,7 +156,10 @@ function GameScreen() {
           </div>
         )}
         {RUN_VIDEO && (
-          <Segmentation onTargetMove={updateBodyPosition}></Segmentation>
+          <Segmentation
+            onTargetMove={updateBodyPosition}
+            startRecordingMovements={recorderRef.current.isRecording}
+          ></Segmentation>
         )}
         <AudioPlayer audioSrc={`${process.env.PUBLIC_URL}/audio/${selectedLevel.playingMusic}`}  shouldPlay={gameStarted}/>
         <canvas
