@@ -7,6 +7,8 @@ import { getLevelById } from "../levels";
 
 function Reel() {
   const videoRefs = useRef({}) as any;
+  const observerRef = useRef<IntersectionObserver>();
+
   const { appState, updateAppState } = useGameState();
 
   const [posts, setPosts] = useState<Array<DancePost & { fromNow: string }>>(
@@ -51,7 +53,9 @@ function Reel() {
     const observer = new IntersectionObserver(handleIntersection, options);
 
     Object.values(videoRefs.current).forEach((videoRef: any) => {
-      observer.observe(videoRef);
+      if (videoRef) {
+        observer.observe(videoRef);
+      }
     });
 
     return () => {
