@@ -4,6 +4,7 @@ import { DancePost, getPosts, likePost } from "../dances-service";
 import moment from "moment";
 import { useGameState } from "../components/GameProvider";
 import { getLevelById } from "../levels";
+import { Link } from "react-router-dom";
 
 function Reel() {
   const videoRefs = useRef({}) as any;
@@ -76,6 +77,10 @@ function Reel() {
 
   return (
     <div className="reels-wrapper" onClick={handleInteraction}>
+      <Link to="/" className="back-to-link">
+        <span className="material-symbols-outlined icon">arrow_back</span>
+        <span>Back to game</span>
+      </Link>
       <div className="reels-content-wrapper">
         <h1 className="title">Your friends are moving! 🕺</h1>
         {!appState.hasPosted && (

@@ -63,8 +63,6 @@
   }
 }
 
-
-
 .play-button {
   position: absolute;
   left: 50%;
@@ -161,4 +159,20 @@
 .sneak-peek.view-more {
   margin: 0 auto;
   display: block;
+}
+
+.back-to-link {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  color: white;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.back-to-link .icon {
+    margin-right: 0.4rem;
+    font-size: 14px;
 }
