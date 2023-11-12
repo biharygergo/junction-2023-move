@@ -83,7 +83,7 @@ function GameScreen() {
 
   const clickStart = () => {
     const recordingStart = 5;
-    const recordingEnd = 30;
+    const recordingEnd = 40;
     startGame();
 
     setTimeout(() => {

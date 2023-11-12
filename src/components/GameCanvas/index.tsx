@@ -88,7 +88,7 @@ const Scene: React.FC<SceneProps> = ({ targets, startScene }) => {
                 position={[0, 0, 1]}
                 startTime={(target.startTime as number) + countDownLength}
               />
-            ),
+            )
           )}
         <TransparentImage
           url={"/img/BG_6_FHD.png"}
@@ -130,50 +130,70 @@ const targets = new Array(120).fill({}).map((value, index) => {
 
 const rickTargets = [
   {
-    "startTime": 0,
-    "param": 3,
-    "type": "box"
+    startTime: 0,
+    param: 3,
+    type: "box",
   },
   {
-    "startTime": 1,
-    "param": 4,
-    "type": "box"
+    startTime: 1,
+    param: 4,
+    type: "box",
   },
   {
-    "startTime": 2,
-    "param": 1,
-    "type": "box"
+    startTime: 2,
+    param: 1,
+    type: "box",
   },
   {
-    "startTime": 3,
-    "param": 2,
-    "type": "jump"
+    startTime: 3,
+    param: 2,
+    type: "jump",
   },
   {
-    "startTime": 5,
-    "param": 1,
-    "type": "jump"
+    startTime: 5,
+    param: 1,
+    type: "jump",
   },
   {
-    "startTime": 11,
-    "param": 0,
-    "type": "spin"
+    startTime: 9,
+    param: 0,
+    type: "spin",
   },
   {
-    "startTime": 10,
-    "param": 2,
-    "type": "box"
+    startTime: 10,
+    param: 2,
+    type: "box",
   },
   {
-    "startTime": 10,
-    "param": 1,
-    "type": "box"
+    startTime: 10,
+    param: 1,
+    type: "box",
   },
   {
-    "startTime": 12,
-    "param": 3,
-    "type": "jump"
-  }
+    startTime: 12,
+    param: 3,
+    type: "jump",
+  },
+  {
+    startTime: 14,
+    param: 3,
+    type: "box",
+  },
+  {
+    startTime: 14,
+    param: 2,
+    type: "box",
+  },
+  {
+    startTime: 16,
+    param: 1,
+    type: "box",
+  },
+  {
+    startTime: 17,
+    param: 4,
+    type: "box",
+  },
 ] as any;
 
 export const GameCanvas = () => {
