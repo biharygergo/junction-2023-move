@@ -2,161 +2,166 @@ export const level2 = {
   id: "level-2",
   name: "Level 2",
   background: "bg-2.png",
-    exportedBackground: "bg-2-sm.png",
+  exportedBackground: "bg-2-sm.png",
   playingMusic: "passion.mp3",
   uploadMusic: "cottoneye.mp3",
   recordingStart: 5,
   recordingEnd: 40,
   targets: [
       {
-          "0.553": 1.753,
-          "4": 1,
-          "box": "box"
+          "startTime": 0.553,
+          "param": 4,
+          "type": "box"
       },
       {
-          "0.553": 2.953,
-          "4": 2,
-          "box": "spin"
+          "startTime": 1.753,
+          "param": 1,
+          "type": "box"
       },
       {
-          "0.553": 4.153,
-          "4": 3,
-          "box": "box"
+          "startTime": 2.953,
+          "param": 2,
+          "type": "spin"
       },
       {
-          "0.553": 5.353,
-          "4": 4,
-          "box": "box"
+          "startTime": 4.153,
+          "param": 3,
+          "type": "box"
       },
       {
-          "0.553": 6.553,
-          "4": 2,
-          "box": "jump"
+          "startTime": 5.353,
+          "param": 4,
+          "type": "box"
       },
       {
-          "0.553": 7.753,
-          "4": 1,
-          "box": "jump"
+          "startTime": 6.553,
+          "param": 2,
+          "type": "jump"
       },
       {
-          "0.553": 8.953,
-          "4": 3,
-          "box": "box"
+          "startTime": 7.753,
+          "param": 1,
+          "type": "jump"
       },
       {
-          "0.553": 10.153,
-          "4": 4,
-          "box": "box"
+          "startTime": 8.953,
+          "param": 3,
+          "type": "box"
       },
       {
-          "0.553": 11.353,
-          "4": 1,
-          "box": "spin"
+          "startTime": 10.153,
+          "param": 4,
+          "type": "box"
       },
       {
-          "0.553": 12.553,
-          "4": 2,
-          "box": "box"
+          "startTime": 11.353,
+          "param": 1,
+          "type": "spin"
       },
       {
-          "0.553": 13.753,
-          "4": 3,
-          "box": "box"
+          "startTime": 12.553,
+          "param": 2,
+          "type": "box"
       },
       {
-          "0.553": 14.953,
-          "4": 4,
-          "box": "box"
+          "startTime": 13.753,
+          "param": 3,
+          "type": "box"
       },
       {
-          "0.553": 16.153,
-          "4": 1,
-          "box": "jump"
+          "startTime": 14.953,
+          "param": 4,
+          "type": "box"
       },
       {
-          "0.553": 17.353,
-          "4": 2,
-          "box": "jump"
+          "startTime": 16.153,
+          "param": 1,
+          "type": "jump"
       },
       {
-          "0.553": 18.553,
-          "4": 3,
-          "box": "box"
+          "startTime": 17.353,
+          "param": 2,
+          "type": "jump"
       },
       {
-          "0.553": 19.753,
-          "4": 4,
-          "box": "box"
+          "startTime": 18.553,
+          "param": 3,
+          "type": "box"
       },
       {
-          "0.553": 20.953,
-          "4": 1,
-          "box": "box"
+          "startTime": 19.753,
+          "param": 4,
+          "type": "box"
       },
       {
-          "0.553": 22.153,
-          "4": 2,
-          "box": "box"
+          "startTime": 20.953,
+          "param": 1,
+          "type": "box"
       },
       {
-          "0.553": 23.353,
-          "4": 3,
-          "box": "spin"
+          "startTime": 22.153,
+          "param": 2,
+          "type": "box"
       },
       {
-          "0.553": 24.553,
-          "4": 4,
-          "box": "box"
+          "startTime": 23.353,
+          "param": 3,
+          "type": "spin"
       },
       {
-          "0.553": 25.753,
-          "4": 1,
-          "box": "box"
+          "startTime": 24.553,
+          "param": 4,
+          "type": "box"
       },
       {
-          "0.553": 26.953,
-          "4": 2,
-          "box": "box"
+          "startTime": 25.753,
+          "param": 1,
+          "type": "box"
       },
       {
-          "0.553": 28.153,
-          "4": 3,
-          "box": "box"
+          "startTime": 26.953,
+          "param": 2,
+          "type": "box"
       },
       {
-          "0.553": 29.353,
-          "4": 2,
-          "box": "jump"
+          "startTime": 28.153,
+          "param": 3,
+          "type": "box"
       },
       {
-          "0.553": 30.553,
-          "4": 4,
-          "box": "box"
+          "startTime": 29.353,
+          "param": 2,
+          "type": "jump"
       },
       {
-          "0.553": 31.753,
-          "4": 1,
-          "box": "box"
+          "startTime": 30.553,
+          "param": 4,
+          "type": "box"
       },
       {
-          "0.553": 32.953,
-          "4": 2,
-          "box": "box"
+          "startTime": 31.753,
+          "param": 1,
+          "type": "box"
       },
       {
-          "0.553": 34.153,
-          "4": 1,
-          "box": "jump"
+          "startTime": 32.953,
+          "param": 2,
+          "type": "box"
       },
       {
-          "0.553": 35.353,
-          "4": 3,
-          "box": "jump"
+          "startTime": 34.153,
+          "param": 1,
+          "type": "jump"
       },
       {
-          "0.553": 36.553,
-          "4": 0,
-          "box": "spin"
+          "startTime": 35.353,
+          "param": 3,
+          "type": "jump"
+      },
+      {
+          "startTime": 36.553,
+          "param": 0,
+          "type": "spin"
       }
   ]
 };
