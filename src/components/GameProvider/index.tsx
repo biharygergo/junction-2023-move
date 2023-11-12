@@ -1,5 +1,7 @@
 import React, { createContext, useCallback, useContext, useState } from "react";
 import { DetectionTarget } from "../../GameScreen/Segmentation";
+import { Level } from "../../levels";
+import { level1 } from "../../levels/level-1";
 
 // Define a type for the hand positions
 type GameState = {
@@ -18,7 +20,8 @@ type GameState = {
   addMiss: () => void;
   gameStarted: boolean;
   startGame: () => void;
-
+  selectedLevel: Level;
+  setSelectedLevel: (level: Level | undefined) => void;
 };
 
 type AppState = {
@@ -56,7 +59,9 @@ const GameContext = createContext<GameState>({
   addHit: () => {},
   addMiss: () => {},
   gameStarted: false,
-  startGame: () => {}
+  startGame: () => {},
+  selectedLevel: level1,
+  setSelectedLevel: () => {},
 });
 
 // Create a provider component for the hand positions
@@ -71,27 +76,36 @@ export const GameProvider: any = ({ children }: any) => {
 
   const [score, setScore] = useState<GameState["score"]>(0);
   const [streak, setStreak] = useState<GameState["streak"]>(1);
-  const [gameStarted, setGameStarted] = useState<GameState["gameStarted"]>(false);
+  const [gameStarted, setGameStarted] =
+    useState<GameState["gameStarted"]>(false);
+  const [selectedLevel, setSelectedLevel] =
+    useState<GameState["selectedLevel"]>(level1);
 
   const [appState, setAppState] = useState<AppState>({
     loadingChecklist: DEFAULT_CHECKLIST,
     allLoaded: false,
   });
 
+  const handleLevelSelect = (level: Level | undefined) => {
+    if (level) {
+      setSelectedLevel(level);
+    }
+  };
+
   // console.log('GameProvider', bodyPositions)
 
   const addHit = () => {
     setScore(score + streak);
-    setStreak(streak + 1)
+    setStreak(streak + 1);
   };
 
   const addMiss = () => {
-    setStreak(1)
+    setStreak(1);
   };
 
   const startGame = () => {
-    setGameStarted(true)
-  }
+    setGameStarted(true);
+  };
 
   // useCallback will return a memoized version of the callback that only changes if one of the dependencies has changed.
   const updateBodyPosition = useCallback((target: DetectionTarget) => {
@@ -172,7 +186,9 @@ export const GameProvider: any = ({ children }: any) => {
     score,
     streak,
     gameStarted,
-    startGame
+    startGame,
+    selectedLevel,
+    setSelectedLevel: handleLevelSelect,
   };
 
   return (
@@ -184,5 +200,3 @@ export const GameProvider: any = ({ children }: any) => {
 export const useGameState = () => {
   return useContext(GameContext);
 };
-
-

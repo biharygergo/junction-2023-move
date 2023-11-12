@@ -1,0 +1,52 @@
+.level-selector {
+  font-family: "Press Start 2P";
+  /* background-color: rgba(255, 255, 255, 0.95); */
+  color: white;
+  padding: 20px;
+  border: white;
+  border-radius: 10px;
+  text-align: center;
+  width: 80%;
+  margin: auto;
+  position: relative;
+  z-index: 99999;
+  text-shadow: black 2px 2px;
+  top: 130px;
+}
+
+.level-selector h2 {
+  /*text-shadow: 2px 2px #000;*/
+}
+
+.level-option {
+  display: flex;
+  margin: 10px 0;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.level-option input[type="radio"] {
+  accent-color: black;
+  margin-right: 10px;
+  width: 30px;
+  height: 30px;
+}
+
+/* Custom radio button style */
+.level-option input[type="radio"]:before {
+  content: "";
+  display: inline-block;
+  /*width: 20px;*/
+  /*height: 20px;*/
+  /*background-color: cyan;*/
+  border-radius: 50%;
+  vertical-align: bottom;
+  margin-right: 5px;
+  transition: background-color 0.2s;
+}
+
+.level-option input[type="radio"]:checked:before {
+  background-color: black;
+}

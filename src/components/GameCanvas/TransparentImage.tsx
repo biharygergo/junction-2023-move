@@ -3,7 +3,7 @@ import {useLoader} from "@react-three/fiber";
 import {LinearFilter, PlaneGeometry, TextureLoader} from "three";
 
 
-const TransparentImage: React.FC<{ url: string, position: any, scale: number }> = ({ url, position, scale }) => {
+const TransparentImage: React.FC<{ url: string, position: any, scale: number, opacity?: number }> = ({ url, position, scale, opacity = 1 }) => {
     const texture = useLoader(TextureLoader, url);
     const [plane, setPlane] = useState<PlaneGeometry>();
 
@@ -27,7 +27,7 @@ const TransparentImage: React.FC<{ url: string, position: any, scale: number }> 
 
     return (
         <mesh geometry={plane} position={position} scale={scale}>
-            <meshBasicMaterial attach="material" map={texture} transparent={true} opacity={1} />
+            <meshBasicMaterial attach="material" map={texture} transparent={true} opacity={opacity} />
         </mesh>
     );
 };

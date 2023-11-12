@@ -8,6 +8,8 @@ import { useGameState } from "../components/GameProvider";
 import {useNavigate} from "react-router-dom";
 import UploadModal from "../components/UploadModal";
 import AudioPlayer from "../components/Audio/Audio";
+import LevelSelector from "./LevelSelector";
+import {levels} from "../levels";
 ///recorderRef.current.isRecording
 function GameScreen() {
   const {
@@ -18,6 +20,7 @@ function GameScreen() {
     updateBodyPosition,
     appState,
     updateLoadingState,
+      selectedLevel,
   } = useGameState();
   const recorderRef = useRef(new Recorder());
   const navigate = useNavigate();
@@ -37,8 +40,8 @@ function GameScreen() {
   }, [recorderRef.current.downloadLink]);
 
   const clickStart = () => {
-    const recordingStart = 5;
-    const recordingEnd =  30;
+    const recordingStart = selectedLevel.recordingStart;
+    const recordingEnd =  selectedLevel.recordingEnd;
     startGame()
 
     setTimeout(() => {
@@ -71,6 +74,7 @@ function GameScreen() {
             ))}
           </ul>
         </div>
+        {appState.allLoaded && !gameStarted && <LevelSelector />}
         {appState.allLoaded && !gameStarted && (
           <button onClick={clickStart} className="startButton">
             START GAME
@@ -87,7 +91,7 @@ function GameScreen() {
         {RUN_VIDEO && (
           <Segmentation onTargetMove={updateBodyPosition}></Segmentation>
         )}
-        <AudioPlayer audioSrc={`${process.env.PUBLIC_URL}/audio/mesmerizing.mp3`}  shouldPlay={gameStarted}/>
+        <AudioPlayer audioSrc={`${process.env.PUBLIC_URL}/audio/${selectedLevel.playingMusic}`}  shouldPlay={gameStarted}/>
         <canvas
           id="canvas"
           width={CANVAS_WIDTH}

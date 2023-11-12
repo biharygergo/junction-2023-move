@@ -10,14 +10,15 @@ import { RUN_VIDEO } from "../../GameScreen/constants";
 import ModelWithAnimation from "./ModelWithAnimation";
 import { useGameState } from "../GameProvider";
 import "./LoadingScreen.css";
+import {Level} from "../../levels";
 
-interface TargetProps {
-  type: "box" | "jump" | "spin";
+export interface TargetProps {
+  type: string;
   param?: number;
   startTime: number;
 }
 interface SceneProps {
-  targets: Partial<TargetProps>[];
+  selectedLevel:Level;
   startScene: boolean;
 }
 
@@ -35,9 +36,9 @@ function Loader() {
   );
 }
 
-const countDownLength = 4;
+const countDownLength = 3;
 
-const Scene: React.FC<SceneProps> = ({ targets, startScene }) => {
+const Scene: React.FC<SceneProps> = ({ selectedLevel, startScene }) => {
   return (
     <Canvas
       camera={{ position: [0, 0, 30], fov: 20 }}
@@ -46,29 +47,38 @@ const Scene: React.FC<SceneProps> = ({ targets, startScene }) => {
         // outputEncoding: sRGBEncoding, // This ensures the renderer output is in sRGB space
       }}
     >
-      {RUN_VIDEO && <CanvasTexturedObject />}
-      {!startScene && (
-        <TransparentImage
-          url={"/img/silhouette.png"}
-          scale={11}
-          position={[0, 0, 0]}
-        />
-      )}
+
+      {/*{!startScene && (*/}
+      {/*  <TransparentImage*/}
+      {/*    url={"/img/silhouette.png"}*/}
+      {/*    scale={11}*/}
+      {/*    position={[0, 0, 0]}*/}
+      {/*  />*/}
+      {/*)}*/}
       <Suspense fallback={<Loader />}>
         {/*<TransparentImage url={"/img/Csaj.png"} scale={12} position={[-0.2, -1, 0]}/>*/}
         {/*  <CanvasTexturedObject />*/}
 
         {startScene && (
-          <ModelWithAnimation
-            url={"/model/countdown.gltf"}
-            scale={0.015}
-            position={[0, 0, 1]}
-            startTime={0}
-          />
+          <>
+            {RUN_VIDEO && <CanvasTexturedObject />}
+            <TransparentImage
+                url={"/img/silhouette.png"}
+                scale={11}
+                position={[0, 0, 0]}
+                opacity={0.3}
+            />
+            <ModelWithAnimation
+              url={"/model/countdown.gltf"}
+              scale={0.015}
+              position={[0, 0, 1]}
+              startTime={0}
+            />
+          </>
         )}
 
         {startScene &&
-          targets.map((target, i) =>
+          selectedLevel.targets.map((target, i) =>
             target.type === "box" ? (
               <TargetBox
                 key={i}
@@ -91,7 +101,7 @@ const Scene: React.FC<SceneProps> = ({ targets, startScene }) => {
             ),
           )}
         <TransparentImage
-          url={"/img/BG_6_FHD.png"}
+          url={"/img/" + selectedLevel.background}
           scale={29}
           position={[0, 0, -50]}
         />
@@ -130,54 +140,54 @@ const targets = new Array(120).fill({}).map((value, index) => {
 
 const rickTargets = [
   {
-    "startTime": 0,
-    "param": 3,
-    "type": "box"
+    startTime: 0,
+    param: 3,
+    type: "box",
   },
   {
-    "startTime": 1,
-    "param": 4,
-    "type": "box"
+    startTime: 1,
+    param: 4,
+    type: "box",
   },
   {
-    "startTime": 2,
-    "param": 1,
-    "type": "box"
+    startTime: 2,
+    param: 1,
+    type: "box",
   },
   {
-    "startTime": 3,
-    "param": 2,
-    "type": "jump"
+    startTime: 3,
+    param: 2,
+    type: "jump",
   },
   {
-    "startTime": 5,
-    "param": 1,
-    "type": "jump"
+    startTime: 5,
+    param: 1,
+    type: "jump",
   },
   {
-    "startTime": 11,
-    "param": 0,
-    "type": "spin"
+    startTime: 11,
+    param: 0,
+    type: "spin",
   },
   {
-    "startTime": 10,
-    "param": 2,
-    "type": "box"
+    startTime: 10,
+    param: 2,
+    type: "box",
   },
   {
-    "startTime": 10,
-    "param": 1,
-    "type": "box"
+    startTime: 10,
+    param: 1,
+    type: "box",
   },
   {
-    "startTime": 12,
-    "param": 3,
-    "type": "jump"
-  }
+    startTime: 12,
+    param: 3,
+    type: "jump",
+  },
 ] as any;
 
 export const GameCanvas = () => {
-  const { gameStarted } = useGameState();
+  const { gameStarted, selectedLevel } = useGameState();
 
   return (
     <div
@@ -189,7 +199,7 @@ export const GameCanvas = () => {
         height: "100%",
       }}
     >
-      <Scene targets={rickTargets} startScene={gameStarted} />
+      <Scene selectedLevel={selectedLevel} startScene={gameStarted} />
     </div>
   );
 };
