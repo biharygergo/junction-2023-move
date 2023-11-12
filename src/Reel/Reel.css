@@ -150,3 +150,8 @@
   margin-top: 2rem;
   cursor: pointer;
 }
+
+.sneak-peek.view-more {
+  margin: 0 auto;
+  display: block;
+}
