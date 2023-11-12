@@ -42,7 +42,6 @@ export type DancePost = {
     acceleration: number;
   };
   likes?: number;
-  levelId?: string;
 };
 
 export type DancePostDto = Omit<
