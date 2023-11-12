@@ -155,7 +155,7 @@ export class Recorder {
     const music = await fetchFile(`${process.env.PUBLIC_URL}/music/rickroll.mp3`);
     await ffmpeg.writeFile('music.mp3', music);
     await ffmpeg.writeFile(name, webcamData);
-    const command = `-i ${name} -filter:v fps=25 output-no-music.mp4`;
+    const command = `-i ${name} -filter:v fps=25 -c:v libx264 -preset ultrafast -crf 22 -c:a copy output-no-music.mp4`;
     const commandWithMusic = `-i output-no-music.mp4 -i music.mp3 -map 0:v -map 1:a -c:v copy -shortest output.mp4`
     await ffmpeg.exec(command.split(" "));
     await ffmpeg.exec(commandWithMusic.split(" "));
