@@ -5,9 +5,9 @@ export const level1 = {
     background: "bg-1.png",
     exportedBackground: "bg-1-sm.png",
     playingMusic: "mesmerizing.mp3",
-    uploadMusic: "never.mp3",
+    uploadMusic: "never-short.mp3",
     recordingStart: 5,
-    recordingEnd: 30,
+    recordingEnd: 42,
     targets: [
         {
             "startTime": 0,
@@ -30,12 +30,12 @@ export const level1 = {
             "type": "jump"
         },
         {
-            "startTime": 5,
+            "startTime": 4,
             "param": 1,
             "type": "jump"
         },
         {
-            "startTime": 11,
+            "startTime": 10,
             "param": 0,
             "type": "spin"
         },
@@ -50,9 +50,74 @@ export const level1 = {
             "type": "box"
         },
         {
-            "startTime": 12,
+            "startTime": 11,
             "param": 3,
             "type": "jump"
+        },
+        {
+            "startTime": 15,
+            "param": 3,
+            "type": "box"
+        },
+        {
+            "startTime": 17,
+            "param": 4,
+            "type": "box"
+        },
+        {
+            "startTime": 19,
+            "param": 1,
+            "type": "box"
+        },
+        {
+            "startTime": 29,
+            "param": 2,
+            "type": "box"
+        },
+        {
+            "startTime": 30,
+            "param": 2,
+            "type": "box"
+        },
+        {
+            "startTime": 31,
+            "param": 1,
+            "type": "box"
+        },
+        {
+            "startTime": 32,
+            "param": 4,
+            "type": "box"
+        },
+        {
+            "startTime": 33,
+            "param": 3,
+            "type": "box"
+        },
+        {
+            "startTime": 35,
+            "param": 2,
+            "type": "jump"
+        },
+        {
+            "startTime": 37,
+            "param": 1,
+            "type": "jump"
+        },
+        {
+            "startTime": 39,
+            "param": 0,
+            "type": "spin"
+        },
+        {
+            "startTime": 40,
+            "param": 4,
+            "type": "box"
+        },
+        {
+            "startTime": 41,
+            "param": 1,
+            "type": "box"
         }
     ]
 }

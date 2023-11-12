@@ -5,9 +5,9 @@ export const level5 = {
     background: "bg-5.png",
     exportedBackground: "bg-5-sm.png",
     playingMusic: "rockyou.mp3",
-    uploadMusic: "never.mp3",
+    uploadMusic: "bangarang.mp3",
     recordingStart: 5,
-    recordingEnd: 30,
+    recordingEnd: 42,
     targets: [
         {
             "type": "box",
@@ -118,61 +118,6 @@ export const level5 = {
             "type": "jump",
             "param": 1,
             "startTime": 38.04
-        },
-        {
-            "type": "box",
-            "param": 3,
-            "startTime": 40.96
-        },
-        {
-            "type": "box",
-            "param": 2,
-            "startTime": 42.44
-        },
-        {
-            "type": "jump",
-            "param": 2,
-            "startTime": 43.92
-        },
-        {
-            "type": "jump",
-            "param": 3,
-            "startTime": 45.4
-        },
-        {
-            "type": "box",
-            "param": 1,
-            "startTime": 46.84
-        },
-        {
-            "type": "box",
-            "param": 2,
-            "startTime": 48.28
-        },
-        {
-            "type": "jump",
-            "param": 3,
-            "startTime": 49.76
-        },
-        {
-            "type": "jump",
-            "param": 3,
-            "startTime": 49.76
-        },
-        {
-            "type": "box",
-            "param": 3,
-            "startTime": 52.68
-        },
-        {
-            "type": "box",
-            "param": 2,
-            "startTime": 54.16
-        },
-        {
-            "type": "jump",
-            "param": 3,
-            "startTime": 55.6
         }
     ]
 }
